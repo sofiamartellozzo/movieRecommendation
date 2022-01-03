@@ -1,6 +1,8 @@
 \documentclass{article}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{interval}
 %--\usepackage[table]{xcolor}
 \usepackage{graphicx}
 %--\usepackage{float}
@@ -104,16 +106,120 @@ Recommender systems produce a list of recommendations in any of the two ways :
 It is also possible to combine these two class of recommendation in order to overcome some limitations they faced. This type of approach is called \textbf{Hybrid Recommendation}.\\
 In this project the items that has been avaluated are movies, and their score are the rating that the users gave them, is supposed after they whatched it.
 
+\newpage
+
 %------------------------------------------%
 \section{Objectives}
 
+\newpage
+
 %------------------------------------------%
 \section{Dataset description}
+--Overall description-
+
+\subsection{Movies}
+--first dataset--
+
+\subsection{Ratings}
+--second dataset--
+
+ADDING: 80\% training and 20\% test
+
+\newpage
 
 %------------------------------------------%
 \section{Algorithm description}
+--overall description--
+
+\subsection{Binary search}
+-- description --
+Used to sort the ids of the user and movie for the ratings matrix\\ \\
+delate the user that has not whatched any movies\\ \\
+built movie-gener matrix M :
+
+\begin{equation}
+      M_{i,j} = \left \{
+            \begin{aligned}
+                  &1 && \text{if movie i is of genre j}\\
+                  &0 && \text{otherwise}
+            \end{aligned} \right.
+\end{equation}
+
+\subsection{Movie-movie similarity}
+create a function that calculate the similarity betweeb 2 movies 
+use it to create a matrix were movie-movie with the similarity result
+
+Get the two movie from the matrix M like vectors:\\
+movie1= $\begin{pmatrix}
+      1&0&0&1&0&1
+\end{pmatrix}$\\
+movie2= $\begin{pmatrix}
+      1&1&0&1&0&1
+\end{pmatrix}$
+\subsubsection{Jaccard similarity coefficient}
+It is a statistic index that is used for gauging the similarity and diversity of sample sets, defined by interaction divided by the size of the union of the sample sets:
+\begin{equation}
+      J(A,B) = \dfrac{|A\cap B|}{|A\cup B|}
+\end{equation}
+so it is a value between 0 $\leq$ J(A,B) $\leq$ 1
+\subsubsection{Cosine similarity}
+It gaves a measure of similarity between two non-zero vectors of an inner product space. It calculate the cosine of the angle($\theta$) between them, which is also the same as the inner product of the same vectors normalized to both have lenght 1. \\
+\begin{figure}[ht]
+      \begin{center}
+            \includegraphics[width=0.7\textwidth]{images/cosine.png}
+      \end{center}
+\end{figure}\\
+Because of that it is bounded in the interval [-1,1] for any angle $\theta$ :
+\begin{itemize}
+      \item two vectors with the same orientation have a cosine similarity of \textbf{1}
+      \item two vectors oriented at right angle relative to each other have a similarity of \textbf{0}
+      \item two vectors diametrically opposed have a similarity of \textbf{-1}
+\end{itemize}
+By using the Euclidean dot product formula:
+A $\cdot$ B = $\|A\|$ $\|B\|$ $\cos\theta$ \\
+We obtain the cosine similarity formula:\\
+\begin{equation}
+      S_c(A,B) = \cos\theta = \frac{A \cdot B}{\|A\| \|B\|} = \frac{\sum_{i=1}^n A_i B_i}{\sqrt{\sum_{i=1}^n A_i^2}\sqrt{\sum_{i=1}^n B_i^2}}
+\end{equation}\\
+where $A_i$ anf $B_i$ are components of vector A and B respectively.
+
+
+Now create the clusters that contains the similar movies to one and another in it. 
+
+Fill the matrix containing the rating predicting the ones missing:
+for each user get all the movies he likes (gave a score $\ge$ 3.5) 
+then, from the cluster on which it is contained, get all the movies similar to it and for the ones that haven't been evaluated yet predict the rating of a value equal to the one gave for the original movie.
+
+\subsection{User-user similarity}
+Here find the user similar for each other based on the movie both liked, in order to predict a good rating on the film that one user has'nt seen yet but a similar user did.
+\subsubsection{SVD}
+Perform SVD on the matrix with the origin ratings and the predicred one by content-based filtering approach.\\
+In linear algebra, the singular value decomposition (SVD) is a factorization of a real or complex matrix. It generalizes the eigendecomposition of a square normal matrix with an orthonormal eigenbasis to any m × n matrix.
+\begin{equation}
+      S = U\Sigma V^T
+\end{equation}
+Specifically, the singular value decomposition of an m $\times$ n complex matrix S is a factorization of the form U$\Sigma V^T$, where \textbf{U} is an m $\times$ m complex unitary matrix, \textbf{$\Sigma$} m $\times$ n rectangular diagonal matrix with non-negative real numbers on the diagonal, and \textbf{V} is an n $\times$ n complex unitary matrix.\\
+The diagonal entries $\sigma _{i}$ = $\Sigma _{ii}$ of $\Sigma$ are known as the singular values of S. The number of non-zero singular values is equal to the rank of S. The columns of U and the columns of V are called the left-singular vectors and right-singular vectors of S, respectively.\\
+-Filter on the value just lower than the threshold\\
+-reconstruct the matrix multiply the tre matrix U a diagonal one with the \\eigenvalues higher than the treshold and V transposed\\
+
+
+\newpage
 
 %------------------------------------------%
 \section{Results}
+From the result obtained get an example: from one user, his ratings, the first 10 movie our system would reccommend
+
+\subsection{Error calculation}
+From the result obtained compare it with the part of dataser keeped for the testing
+\subsubsection{RMSE}
+--description--
+\subsubsection{rho}
+--description--
+
+\subsection{Precision}
+--description--
+\subsection{Recall}
+--description--
 
 \end{document}
