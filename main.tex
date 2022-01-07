@@ -3,8 +3,11 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{interval}
-%--\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage[table]{xcolor}
 \usepackage{graphicx}
+%--\renewcommand{\arraystretch}{2.5}
+%--\arrayrulecolor[HTML]{DB5800}
 %--\usepackage{float}
 %--\usepackage{longtable}
 %--\usepackage{rotating}
@@ -21,7 +24,7 @@
 	linkcolor=black,
 	urlcolor=black
 }
-
+\DeclareUnicodeCharacter{2212}{-}
 \begin{document}
 
 
@@ -59,13 +62,7 @@
 %------------------------------------------%
 \section{Introduction}
 
-With the advent of the internet today, we are witnessing an
-enormous information overload. This exponential growth in
-data results in difficulty organizing and analyzing this basic
-information but opens up new avenues on the paths of
-knowledge. The question is no longer to have the information
-but to find the relevant information simultaneously; from there,
-recommendation systems were born.\\ \\
+With the advent of the internet today, we are witnessing an enormous information overload. This exponential growth in data results in difficulty organizing and analyzing this basic information but opens up new avenues on the paths of knowledge. The question is no longer to have the information but to find the relevant information simultaneously; from there, recommendation systems were born.\\ 
 \textbf{Recommender System} is a system that seeks to predict or filter preferences according to the user’s choices. Recommender systems are utilized in a variety of areas including movies, music, news, books, research articles, search queries, social tags, and products in general. 
 Recommender systems produce a list of recommendations in any of the two ways :
 \begin{itemize}
@@ -111,25 +108,60 @@ In this project the items that has been avaluated are movies, and their score ar
 %------------------------------------------%
 \section{Objectives}
 
+The purpose of this project is to develop a recommender system, which predicts the rating of a user towards a domain-specific item. In our case, this domain-specific item is a movie, and the main focus of our recommendation system is to filter and predict only those movies which a user would prefer. The approach chosen to develop this system is an hybrid one. At first we used a content-based filtering to predict some movie’s ratings based on the similarity between movies. Then we adopted a collaborative filtering to make other predictions on movie’s ratings deducted from similarity between users. The based knowledge of our system derives a dataset, described thoughly in the next section, while in the fourth section there is a step by step description of the algorithm, followed by an evaluation of it’s performance and an example of output it generates.
+
 \newpage
 
 %------------------------------------------%
 \section{Dataset description}
---Overall description-
+The data provided are stored in the two CSV file named movies.csv and ratings.csv
 
 \subsection{Movies}
---first dataset--
+In this dataset are stored information about the movies. The content is structured in 3 different columns : \\
+the \textbf{id}, the \textbf{title} and a list of \textbf{genres} of one movie; each row represents a movie. In it are stored 10329 movies with 20 different genres:\\ Western , Documentary, Children, Crime, Film-Noir, Comedy, Adventure, Fantasy, Horror, Thriller, Mystery, Sci-Fi, Musical, Romance, Action, Animation, IMAX, Drama, War, not-defined. \\
+In the following image there is a representation of it:
+\begin{figure}[ht]
+      \begin{center}
+            \includegraphics[width=0.5\textwidth]{images/movies data.png}
+      \end{center}
+\end{figure}
 
 \subsection{Ratings}
---second dataset--
-
-ADDING: 80\% training and 20\% test
+Here are stored all the ratings that the users gave to the movies from 0 to 5. The 4 columns are filled with respectively: \\the id of a \textbf{user}, the id of a \textbf{movie}, the value of the \textbf{rate} of the user on the movie and the day and time on which the evaluation has been made. Counting the different userId we found that there are 668 users that overall made 105339 ratings. \\
+To follow a representation of it:
+\begin{figure}[ht]
+      \begin{center}
+            \includegraphics[width=0.4\textwidth]{images/ratings data.png}
+      \end{center}
+\end{figure}
 
 \newpage
 
 %------------------------------------------%
 \section{Algorithm description}
---overall description--
+In this section a detailed step by step description of the algorithm adopted is provided.\\
+At first we load the dataset with the \textsl{pandas} library, and then organize the data in matrices to use them.\\
+The first matrix have all the 668 users id as rows indexes, 10329 movies id as columns indexes and as value the rating that users gave on movies (the une field missing are set to 0.0).\\
+\begin{center}
+      \begin{tabular}{ | c | c | c | c | c | c | c |} 
+        \hline
+        \rowcolor{lightgray}  & 1 & 2 & 3 & ... & 148626 & 149532 \\ 
+        \hline
+         \cellcolor{lightgray}1 & 0.0 & 0.0 & 0.0 &  & 0.0 & 0.0 \\ 
+        \hline
+        \cellcolor{lightgray}2 & 0.0 & 0.0 & 2.0 &  & 0.0 & 0.0 \\ 
+        \hline
+        \cellcolor{lightgray}3 & 0.0 & 0.0 & 0.0 &  & 0.0 & 0.0\\
+        \hline
+        \cellcolor{lightgray}4 & 0.0 & 0.0 & 0.0 &  & 0.0 & 0.0\\
+        \hline
+        \cellcolor{lightgray}... &  &  &  &  &  & \\ 
+        \hline
+        \cellcolor{lightgray}668 & 0.0 & 3.0 & 0.0 &  & 4.5 & 0.0\\
+        \hline
+      \end{tabular}
+\end{center}
+ADDING: 80\% training and 20\% test
 
 \subsection{Binary search}
 -- description --
@@ -145,7 +177,9 @@ built movie-gener matrix M :
             \end{aligned} \right.
 \end{equation}
 
-\subsection{Movie-movie similarity}
+\subsection{Content-based filtering}
+
+\subsubsection{Movie-movie similarity}
 create a function that calculate the similarity betweeb 2 movies 
 use it to create a matrix were movie-movie with the similarity result
 
@@ -156,6 +190,7 @@ movie1= $\begin{pmatrix}
 movie2= $\begin{pmatrix}
       1&1&0&1&0&1
 \end{pmatrix}$
+\subsubsection{User-user similarity}
 \subsubsection{Jaccard similarity coefficient}
 It is a statistic index that is used for gauging the similarity and diversity of sample sets, defined by interaction divided by the size of the union of the sample sets:
 \begin{equation}
@@ -175,7 +210,7 @@ Because of that it is bounded in the interval [-1,1] for any angle $\theta$ :
       \item two vectors oriented at right angle relative to each other have a similarity of \textbf{0}
       \item two vectors diametrically opposed have a similarity of \textbf{-1}
 \end{itemize}
-By using the Euclidean dot product formula:
+By using the Euclidean dot product formula:\\
 A $\cdot$ B = $\|A\|$ $\|B\|$ $\cos\theta$ \\
 We obtain the cosine similarity formula:\\
 \begin{equation}
@@ -190,7 +225,7 @@ Fill the matrix containing the rating predicting the ones missing:
 for each user get all the movies he likes (gave a score $\ge$ 3.5) 
 then, from the cluster on which it is contained, get all the movies similar to it and for the ones that haven't been evaluated yet predict the rating of a value equal to the one gave for the original movie.
 
-\subsection{User-user similarity}
+\subsection{Collaborative filtering}
 Here find the user similar for each other based on the movie both liked, in order to predict a good rating on the film that one user has'nt seen yet but a similar user did.
 \subsubsection{SVD}
 Perform SVD on the matrix with the origin ratings and the predicred one by content-based filtering approach.\\
@@ -211,15 +246,46 @@ The diagonal entries $\sigma _{i}$ = $\Sigma _{ii}$ of $\Sigma$ are known as the
 From the result obtained get an example: from one user, his ratings, the first 10 movie our system would reccommend
 
 \subsection{Error calculation}
-From the result obtained compare it with the part of dataser keeped for the testing
+Compare the results obtained with the dataset part kept apart for the testing
+
 \subsubsection{RMSE}
---description--
+
+Root Mean Square Error (RMSE) is the standard deviation of the residuals (prediction errors). Residuals are a measure of how far from the regression line data points are; RMSE is a measure of how spread out these residuals are. In other words, it tells you how concentrated the data is around the line of best fit. 
+
+The formula is:
+\begin{equation}
+      RMSE = \sqrt{\frac{1}{|\Omega_{test}|}\sum_{i,j\in\Omega_test} (r_{i,j} - r_{i,j}^{pred})}
+\end{equation}
 \subsubsection{rho}
---description--
+Pearson correlation coefficient is a measure of linear correlation between two sets of data. It is the ratio between the covariance of two variables and the product of their standard deviations; thus it is essentially a normalised measurement of the covariance, such that the result always has a value between −1 and 1. As with covariance itself, the measure can only reflect a linear correlation of variables, and ignores many other types of relationship or correlation.
+It is calculated as follow:
+\begin{equation}
+      \rho = \frac{\sum_{\Omega_{test}} (r_{ij}-\overline{r})(r_{ij}^{pred}-\overline{r^{pred}})}{{\sqrt{\sum_{\Omega_{test}}(r_{ij}-\overline{r})^2}}{\sqrt{\sum_{\Omega_{test}}(r_{ij}^{pred}-\overline{r^{pred}})^2}}}
+\end{equation}
+The result is a value between [-1,1]:
+\begin{itemize}
+      \item 1 = perfect match-strong positive relation; all data points lie on a line for which both variable r and $r_{pred}$ are increasing
+      \item 0 = random; there is no linear dependency between the variables
+      \item -1 = strong negative relation; also here a linear equation describes the relationship between the variables r and $r_{pred}$ and the points lie on a line in which are decreasing
+\end{itemize}
+\begin{figure}[ht]
+      \begin{center}
+            \includegraphics[width=0.6\textwidth]{images/pearson.png}
+      \end{center}
+\end{figure}
 
 \subsection{Precision}
---description--
-\subsection{Recall}
---description--
+Precision tries to answer the following question:\\
+'What proportion of positive identification was actually correct?'
 
+\begin{equation}
+      Precision = \frac{TP}{TP + FP}
+\end{equation}
+\subsection{Recall}
+Recall tries to answer the following question:\\
+'What proportion of actual positives was identified correctly?'
+
+\begin{equation}
+      Recall = \frac{TP}{TP + FN}
+\end{equation}
 \end{document}
