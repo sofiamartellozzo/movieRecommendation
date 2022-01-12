@@ -110,8 +110,6 @@ In this project the items that has been avaluated are movies, and their score ar
 
 The purpose of this project is to develop a recommender system, which predicts the rating of a user towards a domain-specific item. In our case, this domain-specific item is a movie, and the main focus of our recommendation system is to filter and predict only those movies which a user would prefer. The approach chosen to develop this system is an hybrid one. At first we used a content-based filtering to predict some movie’s ratings based on the similarity between movies. Then we adopted a collaborative filtering to make other predictions on movie’s ratings deducted from similarity between users. The based knowledge of our system derives a dataset, described thoughly in the next section, while in the fourth section there is a step by step description of the algorithm, followed by an evaluation of it’s performance and an example of output it generates.
 
-\newpage
-
 %------------------------------------------%
 \section{Dataset description}
 The data provided are stored in the two CSV file named movies.csv and ratings.csv
@@ -133,6 +131,12 @@ To follow a representation of it:
       \begin{center}
             \includegraphics[width=0.4\textwidth]{images/ratings data.png}
       \end{center}
+\end{figure}\\
+We also plot the distribution of the ratings data:
+\begin{figure}[ht]
+      \begin{center}
+            \includegraphics[width=0.8\textwidth]{images/rating distributions.png}
+      \end{center}
 \end{figure}
 
 \newpage
@@ -140,8 +144,14 @@ To follow a representation of it:
 %------------------------------------------%
 \section{Algorithm description}
 In this section a detailed step by step description of the algorithm adopted is provided.\\
-At first we load the dataset with the \textsl{pandas} library, and then organize the data in matrices to use them.\\
-The first matrix have all the 668 users id as rows indexes, 10329 movies id as columns indexes and as value the rating that users gave on movies (the une field missing are set to 0.0).\\
+At first we load the data with the \textsl{pandas} library, and then organize them in matrices.\\
+And then we split these data:
+\begin{itemize}
+      \item 80\% as training set
+      \item 20\% as testing set
+\end{itemize}
+It is necessary to shuffle the data before, or in the test set would be only the data about lasts users; the analysis would not be correct.\\
+The first matrix have all the 668 users id as rows, 10329 movies id as columns and filled with the rating that users gave on movies (the ones missing are set to 0.0).\\
 \begin{center}
       \begin{tabular}{ | c | c | c | c | c | c | c |} 
         \hline
@@ -161,47 +171,76 @@ The first matrix have all the 668 users id as rows indexes, 10329 movies id as c
         \hline
       \end{tabular}
 \end{center}
-ADDING: 80\% training and 20\% test
+
+
 
 \subsection{Binary search}
--- description --
-Used to sort the ids of the user and movie for the ratings matrix\\ \\
-delate the user that has not whatched any movies\\ \\
-built movie-gener matrix M :
+Binary search is an algorithm that find an element in an array with a complexity of O(log n). It search in a sorted array by repeatedly dividing the search interval in half. Begin with an interval covering the whole array. If the value of the search key is less than the item in the middle of the interval, narrow the interval to the lower half. Otherwise, narrow it to the upper half. Repeatedly check until the value is found or the interval is empty.
+In this way we made the search of an element in the matrix in a more efficient way, also because of the big amount of indexes that compose it.\\ \\
+Built movie-gener matrix M :
 
 \begin{equation}
+      \label{eqn:movieMatrix}
       M_{i,j} = \left \{
             \begin{aligned}
                   &1 && \text{if movie i is of genre j}\\
                   &0 && \text{otherwise}
             \end{aligned} \right.
 \end{equation}
+\begin{center}
+      \begin{tabular}{ | c | c | c | c | c | c | c |} 
+        \hline
+        \rowcolor{lightgray}  & Comedy & Drama & Horror & ... & Fantasy & Sci-Fi \\ 
+        \hline
+         \cellcolor{lightgray}1 & 1 & 0 & 0 &  & 1 & 0 \\ 
+        \hline
+        \cellcolor{lightgray}2 & 0 & 0 & 0 &  & 1 & 0 \\ 
+        \hline
+        \cellcolor{lightgray}3 & 1 & 0 & 0 &  & 0 & 0\\
+        \hline
+        \cellcolor{lightgray}4 & 1 & 1 & 0 &  & 0 & 0\\
+        \hline
+        \cellcolor{lightgray}... &  &  &  &  &  & \\ 
+        \hline
+        \cellcolor{lightgray}149532 & 0 & 0 & 0 &  & 0 & 0\\
+        \hline
+      \end{tabular}
+\end{center}
 
-\subsection{Content-based filtering}
 
-\subsubsection{Movie-movie similarity}
-create a function that calculate the similarity betweeb 2 movies 
-use it to create a matrix were movie-movie with the similarity result
+\subsection{User-user similarity}
+Also calculate the similarity between 2 users, looking on their evaluation on common movies. 
 
-Get the two movie from the matrix M like vectors:\\
+Get each user as vector of the ratings matrix and copare with the others, after just keeping the rating on the same movies:\\
+user1= $\begin{pmatrix}
+      1.0&3.0&2.0&...&4.0&1.5
+\end{pmatrix}$\\
+user2= $\begin{pmatrix}
+      1.0&3.5&0.5&...&4.0&3.0
+\end{pmatrix}$
+\subsection{Movie-movie similarity}
+Calculate the similarity between 2 movies and create a matrix with the results for all the pair of movies. Two movies are defined similar if are defined with almost the same genres.
+
+At each iteration get two movie from the matrix M as vectors:\\
 movie1= $\begin{pmatrix}
       1&0&0&1&0&1
 \end{pmatrix}$\\
 movie2= $\begin{pmatrix}
       1&1&0&1&0&1
 \end{pmatrix}$
-\subsubsection{User-user similarity}
+
 \subsubsection{Jaccard similarity coefficient}
+[NOT USED AT THE END]
 It is a statistic index that is used for gauging the similarity and diversity of sample sets, defined by interaction divided by the size of the union of the sample sets:
 \begin{equation}
       J(A,B) = \dfrac{|A\cap B|}{|A\cup B|}
 \end{equation}
 so it is a value between 0 $\leq$ J(A,B) $\leq$ 1
-\subsubsection{Cosine similarity}
-It gaves a measure of similarity between two non-zero vectors of an inner product space. It calculate the cosine of the angle($\theta$) between them, which is also the same as the inner product of the same vectors normalized to both have lenght 1. \\
+\subsection{Cosine similarity}
+It gaves a measure of similarity between two non-zero vectors of an inner product space.\\It calculate the cosine of the angle($\theta$) between them, which is also the same as the inner product of the same vectors normalized to both have lenght 1. \\
 \begin{figure}[ht]
       \begin{center}
-            \includegraphics[width=0.7\textwidth]{images/cosine.png}
+            \includegraphics[width=0.6\textwidth]{images/cosine.png}
       \end{center}
 \end{figure}\\
 Because of that it is bounded in the interval [-1,1] for any angle $\theta$ :
@@ -216,19 +255,19 @@ We obtain the cosine similarity formula:\\
 \begin{equation}
       S_c(A,B) = \cos\theta = \frac{A \cdot B}{\|A\| \|B\|} = \frac{\sum_{i=1}^n A_i B_i}{\sqrt{\sum_{i=1}^n A_i^2}\sqrt{\sum_{i=1}^n B_i^2}}
 \end{equation}\\
-where $A_i$ anf $B_i$ are components of vector A and B respectively.
-
-
-Now create the clusters that contains the similar movies to one and another in it. 
-
-Fill the matrix containing the rating predicting the ones missing:
-for each user get all the movies he likes (gave a score $\ge$ 3.5) 
-then, from the cluster on which it is contained, get all the movies similar to it and for the ones that haven't been evaluated yet predict the rating of a value equal to the one gave for the original movie.
-
+where $A_i$ anf $B_i$ are components of vector A and B respectively.\\ \\
+Then create the clusters that, each, contains all the movies calculated before as similar one to another. 
+Them are build as dictionary: the keys are the number of the corresponding group (equal to the order on wich are created), the values are list filled with the film of that group.\\
+Create another dictionary for the cluster of user similars: the keys again the number of the cluster, the values aso a list but of user id. \\
+To keep data organized and easilly to reach, sort the values in the dictionaries.\\
 \subsection{Collaborative filtering}
-Here find the user similar for each other based on the movie both liked, in order to predict a good rating on the film that one user has'nt seen yet but a similar user did.
-\subsubsection{SVD}
-Perform SVD on the matrix with the origin ratings and the predicred one by content-based filtering approach.\\
+Fill the matrix ratings, predicting the ones missing: for each user, get his similars from the cluster on which he belongs; get the avarage value of the rating gave the most by them.
+\subsection{Content-based filtering}
+For each user get all the movies he evaluate (with a ratings $\ge$ 0.5), and for each of them get all the movies similar to it from the movie-movie dictionary.The ones that haven't been evaluated yet, predict the rating with a value equal to the avarage of the one evaluated or predicted yet with the collaborative filtering (through the ones in the cluster).\\
+Movie not evaluated= or anv of all the rating of similar movies
+or if predicted with collaborative, the avg btw that predicted rating and the avg of all the similar 
+\subsection{SVD}
+%Perform SVD on the matrix with the origin ratings and the predicred one by content-based filtering approach.\\
 In linear algebra, the singular value decomposition (SVD) is a factorization of a real or complex matrix. It generalizes the eigendecomposition of a square normal matrix with an orthonormal eigenbasis to any m × n matrix.
 \begin{equation}
       S = U\Sigma V^T
