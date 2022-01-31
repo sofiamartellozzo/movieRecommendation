@@ -101,22 +101,22 @@ Recommender systems produce a list of recommendations in any of the two ways :
       \end{itemize}
 \end{itemize}
 It is also possible to combine these two class of recommendation in order to overcome some limitations they faced. This type of approach is called \textbf{Hybrid Recommendation}.\\
-In this project the items that has been avaluated are movies, and their score are the rating that the users gave them, is supposed after they whatched it.
+In this project the items that has been evaluated are movies, and their scores are the rating that the users gave after they whatched them.
 
 \newpage
 
 %------------------------------------------%
 \section{Objectives}
 
-The purpose of this project is to develop a recommender system, which predicts the rating of a user towards a domain-specific item. In our case, this domain-specific item is a movie, and the main focus of our recommendation system is to filter and predict only those movies which a user would prefer. The approach chosen to develop this system is an hybrid one. At first we used a content-based filtering to predict some movie’s ratings based on the similarity between movies. Then we adopted a collaborative filtering to make other predictions on movie’s ratings deducted from similarity between users. The based knowledge of our system derives a dataset, described thoughly in the next section, while in the fourth section there is a step by step description of the algorithm, followed by an evaluation of it’s performance and an example of output it generates.
+The purpose of this project is to develop a recommender system, which predicts the ratings of a user towards a domain-specific item. In our case, this domain-specific item is a movie, and the main focus of our recommendation system is to filter and predict only those movies that a user would prefer. The approach chosen to develop this system is a hybrid one. At first, we used a collaborative filtering technique to make predictions on movies' ratings deducted from similarities between users. Then we adopted a content-based filtering technique to predict some movies' ratings based on similarities between movies. The based knowledge of our system derives a data set that is described thoroughly in the next section, while in the fourth section there is a step-by-step description of the algorithm, followed by an evaluation of its performance and an example of output it generates.
 
 %------------------------------------------%
 \section{Dataset description}
-The data provided are stored in the two CSV file named movies.csv and ratings.csv
+The data provided are stored in two CSV files named movies.csv and ratings.csv.
 
 \subsection{Movies}
 In this dataset are stored information about the movies. The content is structured in 3 different columns : \\
-the \textbf{id}, the \textbf{title} and a list of \textbf{genres} of one movie; each row represents a movie. In it are stored 10329 movies with 20 different genres:\\ Western , Documentary, Children, Crime, Film-Noir, Comedy, Adventure, Fantasy, Horror, Thriller, Mystery, Sci-Fi, Musical, Romance, Action, Animation, IMAX, Drama, War, not-defined. \\
+the \textbf{id}, the \textbf{title}, and a list of \textbf{genres}; each row represents a movie. In it are stored 10329 movies with 20 different genres:\\ Western, Documentary, Children, Crime, Film-Noir, Comedy, Adventure, Fantasy, Horror, Thriller, Mystery, Sci-Fi, Musical, Romance, Action, Animation, IMAX, Drama, War, not-defined. \\
 In the following image there is a representation of it:
 \begin{figure}[ht]
       \begin{center}
@@ -125,14 +125,14 @@ In the following image there is a representation of it:
 \end{figure}
 
 \subsection{Ratings}
-Here are stored all the ratings that the users gave to the movies from 0 to 5. The 4 columns are filled with respectively: \\the id of a \textbf{user}, the id of a \textbf{movie}, the value of the \textbf{rate} of the user on the movie and the day and time on which the evaluation has been made. Counting the different userId we found that there are 668 users that overall made 105339 ratings. \\
+Here are stored all the ratings that the users gave to the movies from 0.5 to 5. The 4 columns are filled with respectively: \\the id of a \textbf{user}, the id of a \textbf{movie}, the value of the \textbf{rate} given by the user on the movie and the \textbf{timestamp} (day and time) of the evaluation. Counting the different userId, there are 668 users that overall made 105339 ratings. \\
 To follow a representation of it:
 \begin{figure}[ht]
       \begin{center}
             \includegraphics[width=0.4\textwidth]{images/ratings data.png}
       \end{center}
 \end{figure}\\
-We also plot the distribution of the ratings data:
+It's also reported the plot of the distribution of the rating data:
 \begin{figure}[ht]
       \begin{center}
             \includegraphics[width=0.8\textwidth]{images/rating distributions.png}
@@ -143,15 +143,15 @@ We also plot the distribution of the ratings data:
 
 %------------------------------------------%
 \section{Algorithm description}
-In this section a detailed step by step description of the algorithm adopted is provided.\\
-At first we load the data with the \textsl{pandas} library, and then organize them in matrices.\\
-And then we split these data:
+In this section a detailed step-by-step description of the algorithm adopted is provided.\\
+At first, the data has been loaded using the \textsl{pandas} library and then they have been organized in matrices.\\
+Before building the matrices, the data has been split:
 \begin{itemize}
       \item 80\% as training set
       \item 20\% as testing set
 \end{itemize}
-It is necessary to shuffle the data before, or in the test set would be only the data about lasts users; the analysis would not be correct.\\
-The first matrix have all the 668 users id as rows, 10329 movies id as columns and filled with the rating that users gave on movies (the ones missing are set to 0.0).\\
+It is necessary to shuffle the data before, or in the test set would be only the data about lasts users; the analysis would not be correct.\\ \\
+The first matrix called \textbf{ratings matrix} have all the 668 \textbf{user ids} as rows, 10329 \textbf{movie ids} as columns and as values the \textbf{ratings} that users gave to the movies (the ones missing are set to 0.0).\\
 \begin{center}
       \begin{tabular}{ | c | c | c | c | c | c | c |} 
         \hline
@@ -172,21 +172,17 @@ The first matrix have all the 668 users id as rows, 10329 movies id as columns a
       \end{tabular}
 \end{center}
 
-
-
-\subsection{Binary search}
-Binary search is an algorithm that find an element in an array with a complexity of O(log n). It search in a sorted array by repeatedly dividing the search interval in half. Begin with an interval covering the whole array. If the value of the search key is less than the item in the middle of the interval, narrow the interval to the lower half. Otherwise, narrow it to the upper half. Repeatedly check until the value is found or the interval is empty.
-In this way we made the search of an element in the matrix in a more efficient way, also because of the big amount of indexes that compose it.\\ \\
-Built movie-gener matrix M :
+The second matrix keeps track of all the genres associated with a movie: it has \textbf{movie ids} as rows, \textbf{genres} as columns, and as \textbf{values} "1" if the movie is associated to a genre, 0 otherwise. \\
 
 \begin{equation}
       \label{eqn:movieMatrix}
-      M_{i,j} = \left \{
+      CorrelationMatrix_{i,j} = \left \{
             \begin{aligned}
                   &1 && \text{if movie i is of genre j}\\
                   &0 && \text{otherwise}
             \end{aligned} \right.
-\end{equation}
+\end{equation} \\ 
+
 \begin{center}
       \begin{tabular}{ | c | c | c | c | c | c | c |} 
         \hline
@@ -207,37 +203,13 @@ Built movie-gener matrix M :
       \end{tabular}
 \end{center}
 
+\newpage
+\subsection{Binary search}
+Binary search is an algorithm that find an element in an array with a complexity of O(log n). It searches in a sorted array by repeatedly dividing the search interval in half. Begin with an interval covering the whole array. If the value of the search key is less than the item in the middle of the interval, narrow the interval to the lower half. Otherwise, narrow it to the upper half. Repeatedly check until the value is found or the interval is empty.
+This algorithm is been used to speed up the creation of the training lists with values the indexes they refer to.\\
 
-\subsection{User-user similarity}
-Also calculate the similarity between 2 users, looking on their evaluation on common movies. 
-
-Get each user as vector of the ratings matrix and copare with the others, after just keeping the rating on the same movies:\\
-user1= $\begin{pmatrix}
-      1.0&3.0&2.0&...&4.0&1.5
-\end{pmatrix}$\\
-user2= $\begin{pmatrix}
-      1.0&3.5&0.5&...&4.0&3.0
-\end{pmatrix}$
-\subsection{Movie-movie similarity}
-Calculate the similarity between 2 movies and create a matrix with the results for all the pair of movies. Two movies are defined similar if are defined with almost the same genres.
-
-At each iteration get two movie from the matrix M as vectors:\\
-movie1= $\begin{pmatrix}
-      1&0&0&1&0&1
-\end{pmatrix}$\\
-movie2= $\begin{pmatrix}
-      1&1&0&1&0&1
-\end{pmatrix}$
-
-\subsubsection{Jaccard similarity coefficient}
-[NOT USED AT THE END]
-It is a statistic index that is used for gauging the similarity and diversity of sample sets, defined by interaction divided by the size of the union of the sample sets:
-\begin{equation}
-      J(A,B) = \dfrac{|A\cap B|}{|A\cup B|}
-\end{equation}
-so it is a value between 0 $\leq$ J(A,B) $\leq$ 1
 \subsection{Cosine similarity}
-It gaves a measure of similarity between two non-zero vectors of an inner product space.\\It calculate the cosine of the angle($\theta$) between them, which is also the same as the inner product of the same vectors normalized to both have lenght 1. \\
+It gives a measure of similarity between two non-zero vectors of an inner product space.\\It calculate the cosine of the angle($\theta$) between them, which is also the same as the inner product of the same vectors normalized to both have lenght 1. \\
 \begin{figure}[ht]
       \begin{center}
             \includegraphics[width=0.6\textwidth]{images/cosine.png}
@@ -256,26 +228,96 @@ We obtain the cosine similarity formula:\\
       S_c(A,B) = \cos\theta = \frac{A \cdot B}{\|A\| \|B\|} = \frac{\sum_{i=1}^n A_i B_i}{\sqrt{\sum_{i=1}^n A_i^2}\sqrt{\sum_{i=1}^n B_i^2}}
 \end{equation}\\
 where $A_i$ anf $B_i$ are components of vector A and B respectively.\\ \\
-Then create the clusters that, each, contains all the movies calculated before as similar one to another. 
-Them are build as dictionary: the keys are the number of the corresponding group (equal to the order on wich are created), the values are list filled with the film of that group.\\
-Create another dictionary for the cluster of user similars: the keys again the number of the cluster, the values aso a list but of user id. \\
-To keep data organized and easilly to reach, sort the values in the dictionaries.\\
+
+
+\subsection{User-User \& Movie-Movie similarity}
+For the evaluation of the similarities between movies it's been used the cosine similarity formula between rows of the \textbf{correlation matrix}. For the evaluation of the users similarities the formula is been applied using rows of the \textbf{ratings matrix} but considering only movies rated by both the users (in order to be considered similar they must have at least five common ratings).\\
+
+\subsection{Clustering}
+In order to maintain all the similarity between users and movies to avoid later calculation, user's clusters and movie's clusters were created.\\
+Algorithm used for the building of the user's clusters(analogous for the movie):
+\begin{itemize}
+    \item Create a list of user id
+    \item Take the first element of the list and check which one of the others in the list is similar
+    \item Add all the similar found in a new cluster and delete them from the list
+    \item Repeat until the list is empty
+\end{itemize}
+
+\newline
+In particular, to store the clusters, 2 dictionaries have been used: one containing all the user's clusters and one containing all the movie's clusters. Their structure is the same, the key is the number of the cluster and the value is a list containing the ids of all the elements belonging to the cluster. Furthermore, other two dictionaries have been created for maintaining a direct access to clusters given the id of an element(user or movie): the key is the id and the value is the number of its cluster. 
+\newline
+This technique it's cheaper from the computation and from the memory point of view and it allows to reduce the workload of the future operations since all the similarities have already been calculated and stored.
+
+
 \subsection{Collaborative filtering}
-Fill the matrix ratings, predicting the ones missing: for each user, get his similars from the cluster on which he belongs; get the avarage value of the rating gave the most by them.
+Fill the \textbf{ratings matrix}, predicting some missing values given similar behaviour between users:
+\begin{itemize}
+    \item Given a user, take all the similar in his cluster
+    \item First variant: for each movie, calculate the mean rating between all the ratings given by similar users and assign it to the user.\\
+    Second variant: for each movie, calculate the mean rating between the most common ratings given by similar users and assign it to the user
+    \item Repeat for each user
+\end{itemize}
+
+
 \subsection{Content-based filtering}
-For each user get all the movies he evaluate (with a ratings $\ge$ 0.5), and for each of them get all the movies similar to it from the movie-movie dictionary.The ones that haven't been evaluated yet, predict the rating with a value equal to the avarage of the one evaluated or predicted yet with the collaborative filtering (through the ones in the cluster).\\
-Movie not evaluated= or anv of all the rating of similar movies
-or if predicted with collaborative, the avg btw that predicted rating and the avg of all the similar 
+Given the matrix filled with some values due to the collaborative filtering, try to predict other ratings with a content-based filtering technique between movies:
+\begin{itemize}
+    \item Take a user (a row of the \textbf{ratings matrix}) and retrieve all the movies' clusters
+    \item For each cluster
+    \subitem Calculate the average rating given by the user (ratings $\ge$ 0.5) only to movies that belongs to the cluster;
+    \subitem Insert the average in the position corresponding to movies of the current cluster not rated yet by the user or, if it's not rated but predicted by the collaborative filtering, insert the mean between them
+\end{itemize}
+
+
 \subsection{SVD}
-%Perform SVD on the matrix with the origin ratings and the predicred one by content-based filtering approach.\\
 In linear algebra, the singular value decomposition (SVD) is a factorization of a real or complex matrix. It generalizes the eigendecomposition of a square normal matrix with an orthonormal eigenbasis to any m × n matrix.
 \begin{equation}
       S = U\Sigma V^T
 \end{equation}
 Specifically, the singular value decomposition of an m $\times$ n complex matrix S is a factorization of the form U$\Sigma V^T$, where \textbf{U} is an m $\times$ m complex unitary matrix, \textbf{$\Sigma$} m $\times$ n rectangular diagonal matrix with non-negative real numbers on the diagonal, and \textbf{V} is an n $\times$ n complex unitary matrix.\\
 The diagonal entries $\sigma _{i}$ = $\Sigma _{ii}$ of $\Sigma$ are known as the singular values of S. The number of non-zero singular values is equal to the rank of S. The columns of U and the columns of V are called the left-singular vectors and right-singular vectors of S, respectively.\\
--Filter on the value just lower than the threshold\\
--reconstruct the matrix multiply the tre matrix U a diagonal one with the \\eigenvalues higher than the treshold and V transposed\\
+
+\subsubsection{SVT}
+The singular value truncation (SVT) uses the idea of SVD to complete the original matrix. In particular, it's a recursive process that calculate the SVD of the matrix and then try to reduce its rank modifying the singular values in $\Sigma$.Finally reconstruct the matrix using the same \textbf{U} and \textbf{V} but with the new $\Sigma$. In the algorithm used the singular values are modified according to an adaptive threshold: it's value depends on the number of iteration done. A constant threshold is also possible, for example threshold = 50 gave good results\newline
+
+Here are reported the main steps of the algorithm used:
+
+\begin{itemize}
+    \item Copy the current matrix (the \textbf{old matrix})
+    \item Perform the SVD: \begin{equation}X = U\Sigma V^T\end{equation}
+    \item Calculate the threshold for this step: \begin{equation}
+        threshold = b * e^{(-k * a)}
+    \end{equation}\\
+    where k is the number of iterations already done, a = 0.01, b = 200
+    \item To each singular values greater than zero subtract the threshold and set to zero the ones that become negative
+    \item Build the \textnbf{new matrix} performing the SVD using the same U and V obtained by the initial decomposition and the diagonal matrix $\Sigma$ with the new singular values
+    \item Update the new matrix obtained in the previous point with the values fixed before the application of the algorithm: the true ratings and the ones predicted
+    \item If there are negative values in the new matrix, set them to zero
+    \item Calculate the increment: the difference in module between the \textnbf{new matrix} and the \textnbf{old matrix}
+    \item Repeat until k is lesser than the maximum number if iterations available and the increment is greater than epsilon, where their values are, respectively, 100 and 0.1
+\end{itemize}
+
+\subsection{Neural Network}
+Instead of using collaborative and content-based filtering, it's also possible to use Neural Networks to do it implicitly. In the second solution provided it's been created a neural network for each user. Each NN is been trained using SGD with momentum using two differnte type of data:
+
+\begin{itemize}
+    \item Input: a vector for each movie directly rated by the user (the vector correspond to a row of the \textnbf{correlation matrix}).\newline
+    Output: a vector of 10 position for each movie, where each position corresponds to a rating (from 0.5 to 5) and with all zero except in the position corresponding to the right rate where there is 1
+    \item The same but with movies the uses hasn't rated. In this case, ratings of similar users are been used
+\end{itemize}
+
+\subsubsection{Structure of the neural network}
+
+\subsubsection{Activation function}
+
+\subsubsection{Optimization method}
+
+\subsubsection{Loss function}
+
+\subsection{Possible improvements}
+Maybe say it in the end! To complete!
+In order to improve the performance is also possible to use the timestamp of each rating to find better similarities to users, for example to give more importance to users who rated the same movie more or less in the same days/months with respect to users who rated the same movies with many years between them
+
 
 
 \newpage
@@ -326,5 +368,11 @@ Recall tries to answer the following question:\\
 
 \begin{equation}
       Recall = \frac{TP}{TP + FN}
+\end{equation}
+
+\subsection{F1-measure}
+It's a measure given by the relation between precision and recall
+\begin{equation}
+    F1-score = 2 \times \frac{Precision x Recall}{Precision + Recall}
 \end{equation}
 \end{document}
