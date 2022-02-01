@@ -231,11 +231,11 @@ where $A_i$ anf $B_i$ are components of vector A and B respectively.\\ \\
 
 
 \subsection{User-User \& Movie-Movie similarity}
-For the evaluation of the similarities between movies it's been used the cosine similarity formula between rows of the \textbf{correlation matrix}. For the evaluation of the users similarities the formula is been applied using rows of the \textbf{ratings matrix} but considering only movies rated by both the users (in order to be considered similar they must have at least five common ratings).\\
+For the evaluation of the similarities between movies, it's been used the cosine similarity formula between rows of the \textbf{correlation matrix}. Instead, for the users' similarities, the formula is been applied using rows of the \textbf{ratings matrix} but considering only movies rated by both the users (in order to be considered similar they must have at least five common ratings).\\
 
 \subsection{Clustering}
-In order to maintain all the similarity between users and movies to avoid later calculation, user's clusters and movie's clusters were created.\\
-Algorithm used for the building of the user's clusters(analogous for the movie):
+In order to maintain all the similarities between users and movies to avoid later calculation, user clusters and movie clusters were created.\\
+The algorithm used for the building of the user's clusters(analogous for the movie):
 \begin{itemize}
     \item Create a list of user id
     \item Take the first element of the list and check which one of the others in the list is similar
@@ -244,16 +244,16 @@ Algorithm used for the building of the user's clusters(analogous for the movie):
 \end{itemize}
 
 \newline
-In particular, to store the clusters, 2 dictionaries have been used: one containing all the user's clusters and one containing all the movie's clusters. Their structure is the same, the key is the number of the cluster and the value is a list containing the ids of all the elements belonging to the cluster. Furthermore, other two dictionaries have been created for maintaining a direct access to clusters given the id of an element(user or movie): the key is the id and the value is the number of its cluster. 
+In particular, to store the clusters, two dictionaries have been used: one containing all the user's clusters and one containing all the movie's clusters. Their structure is the same, the key is the number of the cluster and the value is a list containing the ids of all the elements belonging to the cluster. Furthermore, other two dictionaries have been created for maintaining direct access to clusters given the id of an element(user or movie): the key is the id and the value is the number of its cluster. 
 \newline
-This technique it's cheaper from the computation and from the memory point of view and it allows to reduce the workload of the future operations since all the similarities have already been calculated and stored.
+This technique's cheaper from the computation and from the memory point of view and it allows to reduce the workload of the future operations since all the similarities have already been calculated and stored.
 
 
 \subsection{Collaborative filtering}
-Fill the \textbf{ratings matrix}, predicting some missing values given similar behaviour between users:
+Fill the \textbf{ratings matrix}, predicting some missing values given similar behavior between users:
 \begin{itemize}
-    \item Given a user, take all the similar in his cluster
-    \item First variant: for each movie, calculate the mean rating between all the ratings given by similar users and assign it to the user.\\
+    \item Given a user, take all the similar users in his cluster
+    \item First variant: for each movie, calculate the mean rating between all the ratings that are given by similar users and assign it to the user.\\
     Second variant: for each movie, calculate the mean rating between the most common ratings given by similar users and assign it to the user
     \item Repeat for each user
 \end{itemize}
@@ -264,7 +264,7 @@ Given the matrix filled with some values due to the collaborative filtering, try
 \begin{itemize}
     \item Take a user (a row of the \textbf{ratings matrix}) and retrieve all the movies' clusters
     \item For each cluster
-    \subitem Calculate the average rating given by the user (ratings $\ge$ 0.5) only to movies that belongs to the cluster;
+    \subitem Calculate the average rating given by the user (ratings $\ge$ 0.5) only to movies that belong to the cluster;
     \subitem Insert the average in the position corresponding to movies of the current cluster not rated yet by the user or, if it's not rated but predicted by the collaborative filtering, insert the mean between them
 \end{itemize}
 
@@ -278,7 +278,7 @@ Specifically, the singular value decomposition of an m $\times$ n complex matrix
 The diagonal entries $\sigma _{i}$ = $\Sigma _{ii}$ of $\Sigma$ are known as the singular values of S. The number of non-zero singular values is equal to the rank of S. The columns of U and the columns of V are called the left-singular vectors and right-singular vectors of S, respectively.\\
 
 \subsubsection{SVT}
-The singular value truncation (SVT) uses the idea of SVD to complete the original matrix. In particular, it's a recursive process that calculate the SVD of the matrix and then try to reduce its rank modifying the singular values in $\Sigma$.Finally reconstruct the matrix using the same \textbf{U} and \textbf{V} but with the new $\Sigma$. In the algorithm used the singular values are modified according to an adaptive threshold: it's value depends on the number of iteration done. A constant threshold is also possible, for example threshold = 50 gave good results\newline
+The singular value truncation (SVT) uses the idea of SVD to complete the original matrix. In particular, it's a recursive process that calculates the SVD of the matrix and then tries to reduce its rank by modifying the singular values in $\Sigma$. Finally, reconstruct the matrix using the same \textbf{U} and \textbf{V} but with the new $\Sigma$. In the algorithm used the singular values are modified according to an adaptive threshold: its value depends on the number of iterations done. A constant threshold is also possible, for example, threshold = 50 gave good results.\newline
 
 Here are reported the main steps of the algorithm used:
 
@@ -289,30 +289,121 @@ Here are reported the main steps of the algorithm used:
         threshold = b * e^{(-k * a)}
     \end{equation}\\
     where k is the number of iterations already done, a = 0.01, b = 200
-    \item To each singular values greater than zero subtract the threshold and set to zero the ones that become negative
+    \item To each singular value greater than zero subtract the threshold and set to zero the ones that become negative
     \item Build the \textnbf{new matrix} performing the SVD using the same U and V obtained by the initial decomposition and the diagonal matrix $\Sigma$ with the new singular values
     \item Update the new matrix obtained in the previous point with the values fixed before the application of the algorithm: the true ratings and the ones predicted
     \item If there are negative values in the new matrix, set them to zero
     \item Calculate the increment: the difference in module between the \textnbf{new matrix} and the \textnbf{old matrix}
-    \item Repeat until k is lesser than the maximum number if iterations available and the increment is greater than epsilon, where their values are, respectively, 100 and 0.1
+    \item Repeat until k is lesser than the maximum number of iterations available and the increment is greater than epsilon, where their values are, respectively, 100 and 0.1
 \end{itemize}
 
 \subsection{Neural Network}
-Instead of using collaborative and content-based filtering, it's also possible to use Neural Networks to do it implicitly. In the second solution provided it's been created a neural network for each user. Each NN is been trained using SGD with momentum using two differnte type of data:
+Instead of using collaborative and content-based filtering, it's also possible to use Neural Networks to do it implicitly. In the second solution provided it's been created a neural network for each user. Each NN is been trained using two different types of data:
 
 \begin{itemize}
     \item Input: a vector for each movie directly rated by the user (the vector correspond to a row of the \textnbf{correlation matrix}).\newline
-    Output: a vector of 10 position for each movie, where each position corresponds to a rating (from 0.5 to 5) and with all zero except in the position corresponding to the right rate where there is 1
-    \item The same but with movies the uses hasn't rated. In this case, ratings of similar users are been used
+    Output: a vector of 10 positions for each movie, where each position corresponds to a rating (from 0.5 to 5) and with all zero except in the position corresponding to the right rate where there is 1
+    \item The same but with movies the users haven't rated. In this case, ratings of similar users are been used
 \end{itemize}
 
 \subsubsection{Structure of the neural network}
 
+The structure of the neural networks is made of 3 types of layers:
+\begin{itemize}
+    \item Input layer: it's the layer that receives the input vector that, in the case considered, is a vector representing a movie given its genres. Thus this layer has 20 neurons, one for each cell of the input.
+    \item Hidden layers: the quantity of these layers and their dimensions (how many neurons each layer has) could be any. For the project, it's been decided to use 2 hidden layers with sizes, respectively, 32 and 16.
+    \item Output layer: his size depends on the dimension of the output required, since there are 10 possible ratings from 0.5 to 5 the dimension of this layer is 10 and in each position, there is the probability to have the corresponding rate given an input.
+\end{itemize}
+
 \subsubsection{Activation function}
+The activation function characterizes neurons in hidden and output layers. Every node in the same layer must have the same activation function, while it could change between layers.
+The activation functions used are:
+
+\begin{itemize}
+    \item \textbf{Soft max}: it's been used specifically for the output layer since it allows to have a vector with only positive values and with their sum equal to 1, exactly as a probability vector. 
+    \begin{equation}\nonumber
+        \sigma(z_i) = \frac{\exp{z_i}}{\sum_{j=0}^n \exp{z_i}}
+    \end{equation}
+    
+    Where n is the size of the output layer and $z_i$ is the value corresponding to the i-th rating 
+    
+    \item \textbf{Tanh}: 
+    \begin{equation}\nonumber
+        \sigma(z) = \tanh{z} = \frac{e^{z} - e^{-z}}{e^{z} + e^{-z}}
+    \end{equation}
+    
+    \item \textbf{ReLU}:
+    \begin{equation}\nonumber
+        \sigma(z) = \max(0 , z)
+    \end{equation}
+    
+    \item \textbf{Leaky-ReLU}:
+    \begin{equation}\nonumber
+        \sigma(z) = \max(0.1z , z)
+    \end{equation}
+    
+    \item \textbf{Swish}:
+    \begin{equation}\nonumber
+        \sigma(z) = \frac{z}{1 + e^{-z}} = z \times sigmoid(z)
+    \end{equation}
+\end{itemize}
 
 \subsubsection{Optimization method}
+Two different optimizations method have been used for the training of the neural networks:
+
+\begin{itemize}
+    \item Mini-batch stochastic gradient descent (MB-SGD)
+    \begin{equation}\nonumber
+        \theta^{(0)} given
+    \end{equation}
+    \begin{equation}\nonumber
+        for k = 0,1,...,n_{epochs}
+    \end{equation}
+    \begin{equation}\nonumber
+        g^{k} = \frac{1}{|I_k|} \times \sum_{i \in I_k} \nabla_{\theta} J(x_i , y_i , \theta^{(k)})
+    \end{equation}
+    \begin{equation}\nonumber
+        \theta^{(k+1)} = \theta^{(k)} - \lambda_k \times g^{(k)}
+    \end{equation}
+    
+    \item Stochastic gradient descent with momentum
+    \begin{equation}\nonumber
+        \theta^{(0)} given , v^{(0)} = 0
+    \end{equation}
+    \begin{equation}\nonumber
+        for k = 0,1,...,n_{epochs}
+    \end{equation}
+    \begin{equation}\nonumber
+        g^{k} = \frac{1}{|I_k|} \times \sum_{i \in I_k} \nabla_{\theta} J(x_i , y_i , \theta^{(k)})
+    \end{equation}
+    \begin{equation}\nonumber
+        v^{(k+1)} = \alpha v^{(k)} - \lambda_k \times g^{(k)}
+    \end{equation}
+    \begin{equation}\nonumber
+        \theta^{(k+1)} = \theta^{(k)} +  v^{(k+1)}
+    \end{equation}
+\end{itemize}
+
+Where ${\theta}$ are the parameters, \textbf{g} is the gradient of the loss function with respect to ${\theta}$ divided by the dimension of the mini-batch \textbf{I_{k}}. \newline The mini-batch is a random subset of the inputs. Instead, \textbf{v} is the "velocity" vector, as a matter of fact its value is big if far from the minimum, while its value is small if close to the minimum.
 
 \subsubsection{Loss function}
+For this project two different loss functions have been evaluated: 
+\begin{itemize}
+    \item Mean square error (MSE):
+    \begin{equation}\nonumber
+        J = \frac{1}{N} \times \sum_{n=1}^{N} (y_i - y_{i,pred})^2
+    \end{equation}
+    
+    \item Cross entropy:
+    \begin{equation}\nonumber
+        J = -[y \times \ln(y_{pred}) + (1 - y) \times \ln(1 - y_{pred})]
+    \end{equation}
+\end{itemize}
+
+Where \textbf{N} is the dim of the output vector, \textbf{y} is the true output and \textbf{y_{pred}} is  the  prediction.
+
+
+
 
 \subsection{Possible improvements}
 Maybe say it in the end! To complete!
@@ -324,21 +415,54 @@ In order to improve the performance is also possible to use the timestamp of eac
 
 %------------------------------------------%
 \section{Results}
-From the result obtained get an example: from one user, his ratings, the first 10 movie our system would reccommend
+It's been implemented a function that given a user id retrieve 10 movies the system would recommend. An example is reported below:
 
-\subsection{Error calculation}
-Compare the results obtained with the dataset part kept apart for the testing
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c|c|c}
+        \hline
+    \rowcolor{lightgray}N° & Title & Rating predicted\\ 
+        \hline
+        1 & Dream Man (1995) & 5\\
+        \hline
+        2 & Faster Pussycat! Kill! Kill! (1965) & 5\\
+        \hline
+        3 & Endless Summer 2, The (1994) & 5\\
+        \hline
+        4 & Heaven \& Earth (1993) & 5\\
+        \hline
+        5 & Purple Noon (Plein soleil) (1960) & 5\\
+        \hline
+        6 & Stonewall (1995) & 5\\
+        \hline
+        7 & Little Lord Fauntleroy (1936) & 5\\
+        \hline
+        8 & American Dream (1990) & 5\\
+        \hline
+        9 & Schizopolis (1996) & 5\\
+        \hline
+        10 & Quest for Camelot (1998) & 5\\
+        \hline
+    \end{tabular}
+    \caption{Recommend movies for user with id 248 by collaborative and content filtering}
+    \label{tab:recommendedMovie1}
+\end{table}
+
+Add the same but from the NN
+
+\subsection{Evaluation}
 
 \subsubsection{RMSE}
 
-Root Mean Square Error (RMSE) is the standard deviation of the residuals (prediction errors). Residuals are a measure of how far from the regression line data points are; RMSE is a measure of how spread out these residuals are. In other words, it tells you how concentrated the data is around the line of best fit. 
+Root Mean Square Error (RMSE) is the standard deviation of the residuals (prediction errors). Residuals are a measure of how far from the regression line data points are; RMSE is a measure of how to spread out these residuals are. In other words, it tells you how concentrated the data is around the line of best fit. 
 
 The formula is:
 \begin{equation}
       RMSE = \sqrt{\frac{1}{|\Omega_{test}|}\sum_{i,j\in\Omega_test} (r_{i,j} - r_{i,j}^{pred})}
 \end{equation}
-\subsubsection{rho}
-Pearson correlation coefficient is a measure of linear correlation between two sets of data. It is the ratio between the covariance of two variables and the product of their standard deviations; thus it is essentially a normalised measurement of the covariance, such that the result always has a value between −1 and 1. As with covariance itself, the measure can only reflect a linear correlation of variables, and ignores many other types of relationship or correlation.
+
+\subsubsection{Rho}
+Pearson correlation coefficient is a measure of linear correlation between two sets of data. It is the ratio between the covariance of two variables and the product of their standard deviations; thus it is essentially a normalized measurement of the covariance, such that the result always has a value between −1 and 1. As with covariance itself, the measure can only reflect a linear correlation of variables and ignores many other types of relationship or correlation.
 It is calculated as follow:
 \begin{equation}
       \rho = \frac{\sum_{\Omega_{test}} (r_{ij}-\overline{r})(r_{ij}^{pred}-\overline{r^{pred}})}{{\sqrt{\sum_{\Omega_{test}}(r_{ij}-\overline{r})^2}}{\sqrt{\sum_{\Omega_{test}}(r_{ij}^{pred}-\overline{r^{pred}})^2}}}
@@ -375,4 +499,31 @@ It's a measure given by the relation between precision and recall
 \begin{equation}
     F1-score = 2 \times \frac{Precision x Recall}{Precision + Recall}
 \end{equation}
+
+\subsection{Collaborative \& content-based filtering results}
+
+The results obtained by collaborative filtering, content-based filtering and their combination are reported in table \ref{FilteringResults}.
+
+\begin{table}[h]
+      \begin{tabular}{ | c | c | c | c | c | c |} 
+        \hline
+        \rowcolor{lightgray} Config & RMSE & rho & Precision & Recall & F1-score \\ 
+        \hline
+         \cellcolor{lightgray} Only Coll.F & 1.347 & 0.279 & 0.874 & 0.768 & 0.817 \\ 
+        \hline
+        \cellcolor{lightgray} only Con.F & 0.972 & 0.424 & 0.873 & 0.847 & 0.860 \\ 
+        \hline
+        \cellcolor{lightgray}Coll.F V1 + Con.F & 0.926 & 0.481 & 0.869 & 0.900 & 0.884\\
+        \hline
+        \cellcolor{lightgray}Coll.F V2 + Con.F & 0.909 & 0.495 & 0.871 & 0.899 & 0.885\\
+        \hline
+      \end{tabular}
+    \caption{Results of collaborative and content-based filtering}
+    \label{FilteringResults}
+\end{table}
+
+From the results, it's possible to see how the hybrid model is much better than just applying only one filtering technique both in terms of error and F1-score.
+
+\subsection{Neural network results}
+
 \end{document}
