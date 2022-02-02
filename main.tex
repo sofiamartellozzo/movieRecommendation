@@ -75,13 +75,13 @@ Recommender systems produce a list of recommendations in any of the two ways :
       \end{figure}\\
       The \underline{advantages} of this approach are:
       \begin{itemize}
-            \item Domain knowledge not required: The system does not required a domain knowledge because is based only on item ratings.
+            \item Domain knowledge not required: The system does not require a domain knowledge because is based only on item ratings.
             \item Serendipity: The model can help users discover new interests. In isolation, the ML system may not know the user is interested in a given item, but the model might still recommend it because similar users are interested in that item. 
       \end{itemize}
       The \underline{limitations} of this approach are:
       \begin{itemize}
             \item Cold start problem: The prediction of the model for a given (user, item) pair is the dot product of the corresponding embeddings. So, if an item is not seen during training, the system can't create an embedding for it and can't query the model with this item.
-            \item Sparsity: The system may find problems on predicting evaluation because of a situation in which the users evaluate a little of the total number of items available in a dataset. This creates a sparse matrix with a high number of missing values.
+            \item Sparsity: The system may find problems in predicting evaluation because of a situation in which the users evaluate a little of the total number of items available in a dataset. This creates a sparse matrix with a high number of missing values.
       \end{itemize}
 
       \item \textbf{Content-based filtering}: Content-based filtering approaches uses a series of discrete characteristics of an item in order to recommend additional items with similar properties. Content-based filtering methods are totally based on a description of the item and a profile of the user’s preferences. It recommends items based on the user’s past preferences.\\
@@ -92,17 +92,17 @@ Recommender systems produce a list of recommendations in any of the two ways :
       \end{figure}\\
       The \underline{advantages} of this approach are:
       \begin{itemize}
-            \item User autonomy:The model doesn't need any data about other users, since the recommendations are specific to this user. This makes it easier to scale to a large number of users.\\The model can capture the specific interests of a user, and can recommend niche items that very few other users are interested in.
-            \item Immediate consideration of a new item: The model does not need the evaluation of all movie by a user, because it can be recommended without being evaluated.
+            \item User autonomy: The model doesn't need any data about other users, since the recommendations are specific to this user. This makes it easier to scale to a large number of users.\\The model can capture the specific interests of a user and can recommend niche items that very few other users are interested in.
+            \item Immediate consideration of a new item: The model does not need the evaluation of all movies by a user, because it can be recommended without being evaluated.
       \end{itemize}
       The \underline{limitations} of this approach are:
       \begin{itemize}
             \item Content too specific: The model can only make recommendations based on existing interests of the user. In other words, the model has limited ability to expand on the users' existing interests.
-            \item Big scale information: Since the feature representation of the items are hand-engineered to some extent, this technique requires a lot of domain knowledge. The items must be enouth detailed descripted and a user must evaluate several items before the system can iterpret its preferences.
+            \item Big scale information: Since the feature representation of the items are hand-engineered to some extent, this technique requires a lot of domain knowledge. The items must be enough detailed and a user must evaluate several items before the system can interpret its preferences.
       \end{itemize}
 \end{itemize}
-It is also possible to combine these two class of recommendation in order to overcome some limitations they faced. This type of approach is called \textbf{Hybrid Recommendation}.\\
-In this project the items that has been evaluated are movies, and their scores are the rating that the users gave after they whatched them.
+It is also possible to combine these two classes of recommendation in order to overcome some limitations they faced. This type of approach is called \textbf{Hybrid Recommendation}.\\
+In this project the items that have been evaluated are movies, and their scores are the rating that the users gave after they watched them.
 
 \newpage
 
@@ -123,7 +123,8 @@ In this dataset are stored information about the movies. The content is structur
       \item a list of \textbf{genres}
 \end{itemize}
 each row represents a movie.\\ In it are stored 10329 movies with 20 different genres:\\ Western, Documentary, Children, Crime, Film-Noir, Comedy, Adventure, Fantasy, Horror, Thriller, Mystery, Sci-Fi, Musical, Romance, Action, Animation, IMAX, Drama, War, not-defined. \\
-In the following image there is a representation of it:
+In the figure \ref{fig:movies.csv} there is a representation of it.
+
 \begin{figure}[ht]
       \begin{center}
             \includegraphics[width=0.5\textwidth]{images/movies data.png}
@@ -132,6 +133,7 @@ In the following image there is a representation of it:
       \label{fig:movies.csv}
 \end{figure}
 
+\newpage
 \subsection{Ratings}
 Here are stored all the ratings that the users gave to the movies from 0.5 to 5. The 4 columns are filled with respectively: 
 \begin{itemize}
@@ -231,7 +233,6 @@ The second matrix keeps track of all the genres associated with a movie: it has 
 \end{table}
 
 
-\newpage
 \textbf{Binary search} is an algorithm that find an element in an array with a complexity of O(log n). It searches in a sorted array by repeatedly dividing the search interval in half. Begin with an interval covering the whole array. If the value of the search key is less than the item in the middle of the interval, narrow the interval to the lower half. Otherwise, narrow it to the upper half. Repeatedly check until the value is found or the interval is empty.
 This algorithm is been used to speed up the creation of the training lists with values the indexes they refer to.\\
 
@@ -260,7 +261,7 @@ where $A_i$ anf $B_i$ are components of vector A and B respectively.\\ \\
 For the evaluation of the similarities between movies, it's been used the cosine similarity formula between rows of the \textbf{correlation matrix}. Instead, for the users' similarities, the formula is been applied using rows of the \textbf{ratings matrix} but considering only movies rated by both the users (in order to be considered similar they must have at least five common ratings).\\
 
 \subsection{Clustering}
-In order to maintain all the similarities between users and movies to avoid later calculation, user clusters and movie clusters were created.\\
+In order to maintain all the similarities between users and movies to avoid later calculations, user clusters and movie clusters were created.\\
 The algorithm used for the building of the user's clusters(analogous for the movie):
 \begin{itemize}
     \item Create a list of user id
@@ -304,7 +305,7 @@ Specifically, the singular value decomposition of an m $\times$ n complex matrix
 The diagonal entries $\sigma _{i}$ = $\Sigma _{ii}$ of $\Sigma$ are known as the singular values of S. The number of non-zero singular values is equal to the rank of S. The columns of U and the columns of V are called the left-singular vectors and right-singular vectors of S, respectively.\\
 
 \subsubsection{SVT}
-The singular value truncation (SVT) uses the idea of SVD to complete the original matrix. In particular, it's a recursive process that calculates the SVD of the matrix and then tries to reduce its rank by modifying the singular values in $\Sigma$. Finally, reconstruct the matrix using the same \textbf{U} and \textbf{V} but with the new $\Sigma$. In the algorithm used the singular values are modified according to an adaptive threshold: its value depends on the number of iterations done. A constant threshold is also possible, for example, threshold = 50 gave good results.\newline
+The singular value truncation (SVT) uses the idea of SVD to complete the original matrix. In particular, it's an iterative process that calculates the SVD of the matrix and then tries to reduce its rank by modifying the singular values in $\Sigma$. Finally, reconstruct the matrix using the same \textbf{U} and \textbf{V} but with the new $\Sigma$. In the algorithm used the singular values are modified according to an adaptive threshold: its value depends on the number of iterations done. A constant threshold is also possible, for example, threshold = 50 gave good results.\newline
 
 Here are reported the main steps of the algorithm used:
 
@@ -329,16 +330,16 @@ Instead of using collaborative and content-based filtering, it's also possible t
 \begin{itemize}
     \item Input: a vector for each movie directly rated by the user (the vector correspond to a row of the \textbf{correlation matrix}).\newline
     Output: a vector of 10 positions for each movie, where each position corresponds to a rating (from 0.5 to 5) and with all zero except in the position corresponding to the right rate where there is 1
-    \item The same but with movies the users haven't rated. In this case, ratings of similar users are been used
+    \item The same but with movies the user hasn't rated. In this case, ratings of similar users are been used
 \end{itemize}
 
 \subsubsection{Structure of the neural network}
 
 The structure of the neural networks is made of 3 types of layers:
 \begin{itemize}
-    \item Input layer: it's the layer that receives the input vector that, in the case considered, is a vector representing a movie given its genres. Thus this layer has 20 neurons, one for each cell of the input.
-    \item Hidden layers: the quantity of these layers and their dimensions (how many neurons each layer has) could be any. For the project, it's been decided to use 2 hidden layers with sizes, respectively, 32 and 16.
-    \item Output layer: his size depends on the dimension of the output required, since there are 10 possible ratings from 0.5 to 5 the dimension of this layer is 10 and in each position, there is the probability to have the corresponding rate given an input.
+    \item \textbf{Input layer}: it's the layer that receives the input vector that, in the case considered, is a vector representing a movie given its genres. Thus this layer has 20 neurons, one for each cell of the input.
+    \item \textbf{Hidden layers}: the quantity of these layers and their dimensions (how many neurons each layer has) could be any. For the project, it's been decided to use 2 hidden layers with sizes, respectively, 32 and 16.
+    \item \textbf{Output layer}: his size depends on the dimension of the output required, since there are 10 possible ratings from 0.5 to 5 the dimension of this layer is 10 and in each position, there is the probability to have the corresponding rate given an input.
 \end{itemize}
 \begin{figure}[ht]
       \begin{center}
@@ -392,7 +393,7 @@ Two different optimizations method have been used for the training of the neural
         \theta^{(0)} given
     \end{equation}
     \begin{equation}\nonumber
-        for k = 0,1,...,n_{epochs}
+        for \; k = 0,1,...,n_{epochs}
     \end{equation}
     \begin{equation}\nonumber
         g^{k} = \frac{1}{|I_k|} \times \sum_{i \in I_k} \nabla_{\theta} J(x_i , y_i , \theta^{(k)})
@@ -406,7 +407,7 @@ Two different optimizations method have been used for the training of the neural
         \theta^{(0)} given , v^{(0)} = 0
     \end{equation}
     \begin{equation}\nonumber
-        for k = 0,1,...,n_{epochs}
+        for \; k = 0,1,...,n_{epochs}
     \end{equation}
     \begin{equation}\nonumber
         g^{k} = \frac{1}{|I_k|} \times \sum_{i \in I_k} \nabla_{\theta} J(x_i , y_i , \theta^{(k)})
@@ -441,34 +442,35 @@ Where \textbf{N} is the dim of the output vector, \textbf{y} is the true output 
 
 
 \subsection{Possible improvements}
-The traditional collaborative filtering algorithms produce low temporal diversity, it recommended the same top-N items to users concluding that there was not much difference between an evaluation made many years before and one made recently. In a real scenario it is possible that the preferences of a user could change over time, therefore use the timestamp of the ratings could make a better prediction. At first it requires the traditional collaborative filtering in order to find the k-nearest neighbours for each user. The steps are:
+The traditional collaborative filtering algorithms produce low temporal diversity, it recommended the same top-N items to users concluding that there was not much difference between an evaluation made many years before and one made recently. In a real scenario it is possible that the preferences of a user could change over time, therefore using the timestamp of the ratings could make a better prediction. At first, it requires traditional collaborative filtering in order to find the k-nearest neighbors for each user. The steps are:
 \begin{itemize}
-      \item create user and movie cluster with cosine similarity
-      \item create a dictionary for each user with, as key, the user id and as value the list of movies ids he evaluate
+      \item create user and movie clusters with cosine similarity
+      \item create a dictionary for each user with, as key, the user id and as value the list of movies ids he evaluates
       \item order the movie list follow a timeline based on the timestamp on which the rating has been made
-      \item get one user at time, call it \textsl{‘target’}
+      \item get one user at the time, call it \textsl{‘target’}
       \item from the dictionary extract the timestamp of his last rating (\textsl{t})
-      \item get all movie dictionary of all users similar to the target one
-      \item select only the movie evaluated by the neighbours from time \textsl{t} or after, that will be considered for the prediction
-      \item the ratings prediction of the movie in the new list will be the average of the neighbours rating on that movie
+      \item get all movies of all users similar to the target one
+      \item select only the movie evaluated by the neighbors from time \textsl{t} or after, that will be considered for the prediction
+      \item the rating predictions of the movie in the new list will be the average of the neighbors rating on that movie
 \end{itemize}
-In this way the accuracy is higher than the traditional collaborative filtering algorithms, but this approach would also mean losing out on other valid recommendations (excluding all the ratings made before the time ’t’).
+In this way, the accuracy is higher than the traditional collaborative filtering algorithms, but this approach would also mean losing out on other valid recommendations (excluding all the ratings made before the time ’t’).
 
 \subsection{Assumptions}
-During the development of the system, some assumption has been made:
+During the development of the system, some assumptions have been made:
 \begin{itemize}
-      \item \textbf{Clustering}: to speed up the somputation of the similarity between user and movie, some group of these elements similar has been reated.
+      \item \textbf{Clustering}: to speed up the computation of the similarity between user and movie, some group of these elements similar has been rated.
       \begin{itemize}
-            \item For the clusers containing users, the similarity is evaluated based on the same ratings behaviour. The algorithm generates 161 cluster for the users. 
-            \item The other set of clusters contains movies similar for their genres. In this case the amount of clusters is 200.
+            \item For the clusters containing users, the similarity is evaluated based on the same rating behaviors. The algorithm generates 161 clusters for the users. 
+            \item The other set of clusters contains movies similar for their genres. In this case, the amount of clusters is 200.
       \end{itemize} 
-      Another possibility could have been to generate a similarity matrix with user-user and item-item as rows-columns, filled with the cosine similarity calculated between each users or movies. This could be more accurate and precise, but makes the algolithm much more slower and computationally heavy.
-      \item \textbf{Threshold} for similarity: to evaluate two elements as similar, their cosine similarity have to return a value grather or equal than 0.7 (for the movies) and 0.95 (for the users)
-      \item \textbf{Rating recommended}: a movie is recommended by the system if the rating predictes has a value equal or grather than 3.
-      \item \textbf{SVT}: the threshold selected to compute the truncation is calculated with two constant a and b, respectively 0.01 and 200, and k, the number of the iteration.
-      \item \textbf{Hyperparameters}: to train the neural network the best params found are:
-      2000 epochs, using the Gaussian distribution to inizitialize the weights, select the learning rate with the linear decay between a minimum learning rate ${\lambda_{min}}$ = ${e^{-4}}$ and a maximum learning rate ${\lambda_{max}}$ = ${e^{-2}}$ and decay lenght K=1000, implement the stocastic gradient descent with momentum with alpa ${\alpha}$ = 0.95 and minibatch of a size equal to the 30\% of the input size. 
-      \item \textbf{Hiddel layer}: the size of the hidden layer of the neural network are 32 and 16 respectivelly.
+      Another possibility could have been to generate a similarity matrix with user-user and item-item as rows-columns, filled with the cosine similarity calculated between each user or movie. This could be more accurate and precise but makes the algorithm much slower and computationally heavy.
+      \item \textbf{Threshold} for similarity: to evaluate two elements as similar, their cosine similarity has to return a value greater or equal than 0.7 (for the movies) and 0.95 (for the users)
+      \item \textbf{Rating recommended}: a movie is recommended by the system if the rating predicted has a value equal to or greater than 3.
+      \item \textbf{SVT}: the threshold selected to compute the truncation is calculated with two constants a and b, respectively 0.01 and 200, and k, the number of the iterations.
+      \item \textbf{Hyper-parameters}: to train the neural network the best parameters found are:
+      2000 epochs, using the Gaussian distribution to initialize the weights, select the learning rate with the linear decay between a minimum learning rate ${\lambda_{min}}$ = ${e^{-4}}$ and a maximum learning rate ${\lambda_{max}}$ = ${e^{-2}}$ and decay length K=1000, implement the stochastic gradient descent with momentum with alpha ${\alpha}$ = 0.90 and mini-batch of a size equal to the 30\% of the input size. 
+      \item \textbf{Hidden layers}: the sizes of the hidden layers of the neural network are 32 and 16 respectively.
+      \item \textbf{Predictions}: a prediction of a NN is considered "sure" if the difference between the two biggest probabilities is grater than 0.3.
 \end{itemize}
 
 
@@ -604,11 +606,11 @@ The results obtained by collaborative filtering, content-based filtering and the
         \hline
          \cellcolor{lightgray} Only Coll.F & 1.347 & 0.279 & 0.874 & 0.768 & 0.817 \\ 
         \hline
-        \cellcolor{lightgray} only Con.F & 0.972 & 0.424 & 0.873 & 0.847 & 0.860 \\ 
+        \cellcolor{lightgray} Only Con.F & 0.972 & 0.424 & 0.873 & 0.847 & 0.860 \\ 
         \hline
-        \cellcolor{lightgray}Coll.F V1 + Con.F & 0.926 & 0.481 & 0.869 & 0.900 & 0.884\\
+        \cellcolor{lightgray}Coll.F V2 + Con.F & 0.926 & 0.481 & 0.869 & 0.900 & 0.884\\
         \hline
-        \cellcolor{lightgray}Coll.F V2 + Con.F & 0.909 & 0.495 & 0.871 & 0.899 & 0.885\\
+        \cellcolor{lightgray}Coll.F V1 + Con.F & 0.909 & 0.495 & 0.871 & 0.899 & 0.885\\
         \hline
       \end{tabular}
     \caption{Results of collaborative and content-based filtering}
@@ -669,12 +671,23 @@ The results obtained by neural networks are reported in the following tables.\\ 
         \item \textbf{SGD}: stochastic gradient descent method
         \item \textbf{M}: SGD with momentum
     \end{itemize}
-Add some comments on the results
+
+No configuration tried were able to predict a value for each position of the matrix, thus also in that case SVT is used in order to complete the matrix.\newline
+
+Different tests with the same configuration may provide slightly different results because the training is based on a random choice of the mini-batch. It could happen that some inputs are less significant than others.\newline
+
+After performing some tests, it's possible to say that using \textbf{MSE} in the training phase provides a better precision/recall (almost 1), but the number of predicted values is very low, under 1M. So the final result still has a good precision but a low recall. Instead, using the \textbf{cross entropy} as loss function it's possible to be less precise but with a number of predictions that cover more than half of the matrix. In this way, after the application of the SVT, better results are obtained.\newline
+
+Looking at the results, there is also a difference between the training with \textbf{SGD} and with \textbf{SGD with momentum}: the first one provides higher precision, while the second one provides a higher recall. The use of one instead of the other is recommended according to the goal of the system: "high precision or high recall?"\newline
 
 
 \section{Conclusion}
-The scope of this project was to built a recommender system to suggest some movie to a user, based on his preferences and the knowledge obtained by the other users. The best approch resulted was ... but also using ... good result were retreived.
-The results obtained could be subject to little fluctuations, caused by the randomly choice of the data in the minibatch during the NN training. 
+The scope of this project was to build a recommender system to suggest some movies to a user, based on his preferences and the knowledge obtained by the other users.
+
+Both the versions, collaborative filtering + content-based filtering and neural networks, have good results , providing a precision and a recall over 80\%. 
+
+It's important to notice that the results are obtained using movies' genres only. The algorithms could be improved using the timestamps of the ratings and having not only the genres of a movie but also its actors/movie director.
+
 
 \section{References}
 \begin{itemize}
