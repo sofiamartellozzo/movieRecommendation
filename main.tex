@@ -47,6 +47,7 @@
       \HRule \\
       \vspace{1cm}
       {\Large Sofia \textsc{Martellozzo} \quad Matteo \textsc{Nunziante} \par}
+      {\Large(10623060) \quad (10670132) \par}
       \vfill
       {\large Professor\par
           Edie \textsc{Miglio}}
@@ -108,15 +109,20 @@ In this project the items that has been evaluated are movies, and their scores a
 %------------------------------------------%
 \section{Objectives}
 
-The purpose of this project is to develop a recommender system, which predicts the ratings of a user towards a domain-specific item. In our case, this domain-specific item is a movie, and the main focus of our recommendation system is to filter and predict only those movies that a user would prefer. The approach chosen to develop this system is a hybrid one. At first, we used a collaborative filtering technique to make predictions on movies' ratings deducted from similarities between users. Then we adopted a content-based filtering technique to predict some movies' ratings based on similarities between movies. The based knowledge of our system derives a data set that is described thoroughly in the next section, while in the fourth section there is a step-by-step description of the algorithm, followed by an evaluation of its performance and an example of output it generates.
+The purpose of this project is to develop a recommender system, which predicts the ratings of a user towards a domain-specific item. In this case, this domain-specific item is a movie, and the main focus of our recommendation system is to filter and predict only those movies that a user would prefer. The approach chosen to develop this system is a hybrid one. At first, a collaborative filtering technique has been used to make predictions on movies' ratings deducted from similarities between users. Then with the content-based filtering technique some movies' ratings are predicted, based on similarities between movies. A second approach uses the power of the machine learning developing neural networks to make predictions. The based knowledge of this system derives a data set that is described thoroughly in the next section, while in the fourth section there is a step-by-step description of the algorithm, followed by an evaluation of its performance and an example of output it generates.
 
 %------------------------------------------%
 \section{Dataset description}
 The data provided are stored in two CSV files named movies.csv and ratings.csv.
 
 \subsection{Movies}
-In this dataset are stored information about the movies. The content is structured in 3 different columns : \\
-the \textbf{id}, the \textbf{title}, and a list of \textbf{genres}; each row represents a movie. In it are stored 10329 movies with 20 different genres:\\ Western, Documentary, Children, Crime, Film-Noir, Comedy, Adventure, Fantasy, Horror, Thriller, Mystery, Sci-Fi, Musical, Romance, Action, Animation, IMAX, Drama, War, not-defined. \\
+In this dataset are stored information about the movies. The content is structured in 3 different columns : 
+\begin{itemize}
+      \item the \textbf{id}
+      \item the \textbf{title}
+      \item a list of \textbf{genres}
+\end{itemize}
+each row represents a movie.\\ In it are stored 10329 movies with 20 different genres:\\ Western, Documentary, Children, Crime, Film-Noir, Comedy, Adventure, Fantasy, Horror, Thriller, Mystery, Sci-Fi, Musical, Romance, Action, Animation, IMAX, Drama, War, not-defined. \\
 In the following image there is a representation of it:
 \begin{figure}[ht]
       \begin{center}
@@ -125,7 +131,14 @@ In the following image there is a representation of it:
 \end{figure}
 
 \subsection{Ratings}
-Here are stored all the ratings that the users gave to the movies from 0.5 to 5. The 4 columns are filled with respectively: \\the id of a \textbf{user}, the id of a \textbf{movie}, the value of the \textbf{rate} given by the user on the movie and the \textbf{timestamp} (day and time) of the evaluation. Counting the different userId, there are 668 users that overall made 105339 ratings. \\
+Here are stored all the ratings that the users gave to the movies from 0.5 to 5. The 4 columns are filled with respectively: 
+\begin{itemize}
+      \item the id of a \textbf{user}
+      \item the id of a \textbf{movie}
+      \item the value of the \textbf{rate} given by the user on the movie
+      \item the \textbf{timestamp} (day and time) of the evaluation
+\end{itemize}
+Counting the different userId, there are 668 users that overall made 105339 ratings. \\
 To follow a representation of it:
 \begin{figure}[ht]
       \begin{center}
@@ -171,7 +184,6 @@ The first matrix called \textbf{ratings matrix} have all the 668 \textbf{user id
         \hline
       \end{tabular}
 \end{center}
-
 The second matrix keeps track of all the genres associated with a movie: it has \textbf{movie ids} as rows, \textbf{genres} as columns, and as \textbf{values} "1" if the movie is associated to a genre, 0 otherwise. \\
 
 \begin{equation}
@@ -204,12 +216,11 @@ The second matrix keeps track of all the genres associated with a movie: it has 
 \end{center}
 
 \newpage
-\subsection{Binary search}
-Binary search is an algorithm that find an element in an array with a complexity of O(log n). It searches in a sorted array by repeatedly dividing the search interval in half. Begin with an interval covering the whole array. If the value of the search key is less than the item in the middle of the interval, narrow the interval to the lower half. Otherwise, narrow it to the upper half. Repeatedly check until the value is found or the interval is empty.
+\textbf{Binary search} is an algorithm that find an element in an array with a complexity of O(log n). It searches in a sorted array by repeatedly dividing the search interval in half. Begin with an interval covering the whole array. If the value of the search key is less than the item in the middle of the interval, narrow the interval to the lower half. Otherwise, narrow it to the upper half. Repeatedly check until the value is found or the interval is empty.
 This algorithm is been used to speed up the creation of the training lists with values the indexes they refer to.\\
 
 \subsection{Cosine similarity}
-It gives a measure of similarity between two non-zero vectors of an inner product space.\\It calculate the cosine of the angle($\theta$) between them, which is also the same as the inner product of the same vectors normalized to both have lenght 1. \\
+It gives a measure of similarity between two non-zero vectors of an inner product space. It calculate the cosine of the angle($\theta$) between them, which is also the same as the inner product of the same vectors normalized to both have lenght 1. \\
 \begin{figure}[ht]
       \begin{center}
             \includegraphics[width=0.6\textwidth]{images/cosine.png}
@@ -221,8 +232,7 @@ Because of that it is bounded in the interval [-1,1] for any angle $\theta$ :
       \item two vectors oriented at right angle relative to each other have a similarity of \textbf{0}
       \item two vectors diametrically opposed have a similarity of \textbf{-1}
 \end{itemize}
-By using the Euclidean dot product formula:\\
-A $\cdot$ B = $\|A\|$ $\|B\|$ $\cos\theta$ \\
+By using the Euclidean dot product formula:      A $\cdot$ B = $\|A\|$ $\|B\|$ $\cos\theta$ \\
 We obtain the cosine similarity formula:\\
 \begin{equation}
       S_c(A,B) = \cos\theta = \frac{A \cdot B}{\|A\| \|B\|} = \frac{\sum_{i=1}^n A_i B_i}{\sqrt{\sum_{i=1}^n A_i^2}\sqrt{\sum_{i=1}^n B_i^2}}
@@ -242,8 +252,6 @@ The algorithm used for the building of the user's clusters(analogous for the mov
     \item Add all the similar found in a new cluster and delete them from the list
     \item Repeat until the list is empty
 \end{itemize}
-
-\newline
 In particular, to store the clusters, two dictionaries have been used: one containing all the user's clusters and one containing all the movie's clusters. Their structure is the same, the key is the number of the cluster and the value is a list containing the ids of all the elements belonging to the cluster. Furthermore, other two dictionaries have been created for maintaining direct access to clusters given the id of an element(user or movie): the key is the id and the value is the number of its cluster. 
 \newline
 This technique's cheaper from the computation and from the memory point of view and it allows to reduce the workload of the future operations since all the similarities have already been calculated and stored.
@@ -264,8 +272,10 @@ Given the matrix filled with some values due to the collaborative filtering, try
 \begin{itemize}
     \item Take a user (a row of the \textbf{ratings matrix}) and retrieve all the movies' clusters
     \item For each cluster
-    \subitem Calculate the average rating given by the user (ratings $\ge$ 0.5) only to movies that belong to the cluster;
-    \subitem Insert the average in the position corresponding to movies of the current cluster not rated yet by the user or, if it's not rated but predicted by the collaborative filtering, insert the mean between them
+    \begin{itemize}
+          \item Calculate the average rating given by the user (ratings $\ge$ 0.5) only to movies that belong to the cluster;
+          \item Insert the average in the position corresponding to movies of the current cluster not rated yet by the user or, if it's not rated but predicted by the collaborative filtering, insert the mean between them
+    \end{itemize}
 \end{itemize}
 
 
@@ -290,18 +300,18 @@ Here are reported the main steps of the algorithm used:
     \end{equation}\\
     where k is the number of iterations already done, a = 0.01, b = 200
     \item To each singular value greater than zero subtract the threshold and set to zero the ones that become negative
-    \item Build the \textnbf{new matrix} performing the SVD using the same U and V obtained by the initial decomposition and the diagonal matrix $\Sigma$ with the new singular values
-    \item Update the new matrix obtained in the previous point with the values fixed before the application of the algorithm: the true ratings and the ones predicted
+    \item Build the \textbf{new matrix} performing the SVD using the same U and V obtained by the initial decomposition and the diagonal matrix $\Sigma$ with the new singular values
+    \item Update the new matrix obtained in the previous point with the values fixed, before the application of the algorithm: the true ratings and the ones predicted
     \item If there are negative values in the new matrix, set them to zero
-    \item Calculate the increment: the difference in module between the \textnbf{new matrix} and the \textnbf{old matrix}
+    \item Calculate the increment: the difference in module between the \textbf{new matrix} and the \textbf{old matrix}
     \item Repeat until k is lesser than the maximum number of iterations available and the increment is greater than epsilon, where their values are, respectively, 100 and 0.1
 \end{itemize}
 
 \subsection{Neural Network}
-Instead of using collaborative and content-based filtering, it's also possible to use Neural Networks to do it implicitly. In the second solution provided it's been created a neural network for each user. Each NN is been trained using two different types of data:
+Instead of using collaborative and content-based filtering, it's also possible to use Neural Networks to do it implicitly. In the second solution provided it's been created a neural network for each user. Each NN has been trained using two different types of data:
 
 \begin{itemize}
-    \item Input: a vector for each movie directly rated by the user (the vector correspond to a row of the \textnbf{correlation matrix}).\newline
+    \item Input: a vector for each movie directly rated by the user (the vector correspond to a row of the \textbf{correlation matrix}).\newline
     Output: a vector of 10 positions for each movie, where each position corresponds to a rating (from 0.5 to 5) and with all zero except in the position corresponding to the right rate where there is 1
     \item The same but with movies the users haven't rated. In this case, ratings of similar users are been used
 \end{itemize}
@@ -314,6 +324,13 @@ The structure of the neural networks is made of 3 types of layers:
     \item Hidden layers: the quantity of these layers and their dimensions (how many neurons each layer has) could be any. For the project, it's been decided to use 2 hidden layers with sizes, respectively, 32 and 16.
     \item Output layer: his size depends on the dimension of the output required, since there are 10 possible ratings from 0.5 to 5 the dimension of this layer is 10 and in each position, there is the probability to have the corresponding rate given an input.
 \end{itemize}
+\begin{figure}[ht]
+      \begin{center}
+            \includegraphics[width=0.8\textwidth]{images/ANN_img.png}
+      \end{center}
+\end{figure}
+
+
 
 \subsubsection{Activation function}
 The activation function characterizes neurons in hidden and output layers. Every node in the same layer must have the same activation function, while it could change between layers.
@@ -384,7 +401,7 @@ Two different optimizations method have been used for the training of the neural
     \end{equation}
 \end{itemize}
 
-Where ${\theta}$ are the parameters, \textbf{g} is the gradient of the loss function with respect to ${\theta}$ divided by the dimension of the mini-batch \textbf{I_{k}}. \newline The mini-batch is a random subset of the inputs. Instead, \textbf{v} is the "velocity" vector, as a matter of fact its value is big if far from the minimum, while its value is small if close to the minimum.
+Where ${\theta}$ are the parameters, \textbf{g} is the gradient of the loss function with respect to ${\theta}$ divided by the dimension of the mini-batch \textbf{$I_{k}$}. \newline The mini-batch is a random subset of the inputs. Instead, \textbf{v} is the "velocity" vector, as a matter of fact its value is big if far from the minimum, while its value is small if close to the minimum.
 
 \subsubsection{Loss function}
 For this project two different loss functions have been evaluated: 
@@ -400,14 +417,41 @@ For this project two different loss functions have been evaluated:
     \end{equation}
 \end{itemize}
 
-Where \textbf{N} is the dim of the output vector, \textbf{y} is the true output and \textbf{y_{pred}} is  the  prediction.
+Where \textbf{N} is the dim of the output vector, \textbf{y} is the true output and \textbf{$y_{pred}$} is  the  prediction.
 
 
 
 
 \subsection{Possible improvements}
-Maybe say it in the end! To complete!
-In order to improve the performance is also possible to use the timestamp of each rating to find better similarities to users, for example to give more importance to users who rated the same movie more or less in the same days/months with respect to users who rated the same movies with many years between them
+The traditional collaborative filtering algorithms produce low temporal diversity, it recommended the same top-N items to users concluding that there was not much difference between an evaluation made many years before and one made recently. In a real scenario it is possible that the preferences of a user could change over time, therefore use the timestamp of the ratings could make a better prediction. At first it requires the traditional collaborative filtering in order to find the k-nearest neighbours for each user. The steps are:
+\begin{itemize}
+      \item create user and movie cluster with cosine similarity
+      \item create a dictionary for each user with, as key, the user id and as value the list of movies ids he evaluate
+      \item order the movie list follow a timeline based on the timestamp on which the rating has been made
+      \item get one user at time, call it \textsl{‘target’}
+      \item from the dictionary extract the timestamp of his last rating (\textsl{t})
+      \item get all movie dictionary of all users similar to the target one
+      \item select only the movie evaluated by the neighbours from time \textsl{t} or after, that will be considered for the prediction
+      \item the ratings prediction of the movie in the new list will be the average of the neighbours rating on that movie
+\end{itemize}
+In this way the accuracy is higher than the traditional collaborative filtering algorithms, but this approach would also mean losing out on other valid recommendations (excluding all the ratings made before the time ’t’).
+
+\subsection{Assumptions}
+During the development of the system, some assumption has been made:
+\begin{itemize}
+      \item \textbf{Clustering}: to speed up the somputation of the similarity between user and movie, some group of these elements similar has been reated.
+      \begin{itemize}
+            \item For the clusers containing users, the similarity is evaluated based on the same ratings behaviour. The algorithm generates 161 cluster for the users. 
+            \item The other set of clusters contains movies similar for their genres. In this case the amount of clusters is 200.
+      \end{itemize} 
+      Another possibility could have been to generate a similarity matrix with user-user and item-item as rows-columns, filled with the cosine similarity calculated between each users or movies. This could be more accurate and precise, but makes the algolithm much more slower and computationally heavy.
+      \item \textbf{Threshold} for similarity: to evaluate two elements as similar, their cosine similarity have to return a value grather or equal than 0.7 (for the movies) and 0.95 (for the users)
+      \item \textbf{Rating recommended}: a movie is recommended by the system if the rating predictes has a value equal or grather than 3.
+      \item \textbf{SVT}: the threshold selected to compute the truncation is calculated with two constant a and b, respectively 0.01 and 200, and k, the number of the iteration.
+      \item \textbf{Hyperparameters}: to train the neural network the best params found are:
+      2000 epochs, using the Gaussian distribution to inizitialize the weights, select the learning rate with the linear decay between a minimum learning rate ${\lambda_{min}}$ = ${e^{-4}}$ and a maximum learning rate ${\lambda_{max}}$ = ${e^{-2}}$ and decay lenght K=1000, implement the stocastic gradient descent with momentum with alpa ${\alpha}$ = 0.95 and minibatch of a size equal to the 30\% of the input size. 
+      \item \textbf{Hiddel layer}: the size of the hidden layer of the neural network are 32 and 16 respectivelly.
+\end{itemize}
 
 
 
@@ -449,6 +493,37 @@ It's been implemented a function that given a user id retrieve 10 movies the sys
 \end{table}
 
 Add the same but from the NN
+
+\begin{table}[h]
+      \centering
+      \begin{tabular}{c|c|c}
+          \hline
+      \rowcolor{lightgray}N° & Title & Rating predicted\\ 
+          \hline
+          1 & Shawshank Redemption, The (1994) & 4.5\\
+          \hline
+          2 & Balto (1995) & 4\\
+          \hline
+          3 & Power (1995) & 4\\
+          \hline
+          4 & City of Lost Children, The (Cité des enfants perdus, La) (1995) & 4\\
+          \hline
+          5 & Twelve Monkeys (a.k.a. 12 Monkeys) (1995) & 4\\
+          \hline
+          6 & Wings of Courage (1995) & 4\\
+          \hline
+          7 & Seven (a.k.a. Se7en) (1995) & 4\\
+          \hline
+          8 & Lamerica (1994) & 4\\
+          \hline
+          9 & Lawnmower Man 2: Beyond Cyberspace (1996) & 4\\
+          \hline
+          10 & Screamers (1995) & 4\\
+          \hline
+      \end{tabular}
+      \caption{Recommend movies for user with id 565 with neural network}
+      \label{tab:recommendedMovie2}
+  \end{table}
 
 \subsection{Evaluation}
 
