@@ -128,6 +128,8 @@ In the following image there is a representation of it:
       \begin{center}
             \includegraphics[width=0.5\textwidth]{images/movies data.png}
       \end{center}
+      \caption{movies.csv}
+      \label{fig:movies.csv}
 \end{figure}
 
 \subsection{Ratings}
@@ -144,12 +146,16 @@ To follow a representation of it:
       \begin{center}
             \includegraphics[width=0.4\textwidth]{images/ratings data.png}
       \end{center}
+      \caption{ratings.csv}
+      \label{fig:ratings.csv}
 \end{figure}\\
 It's also reported the plot of the distribution of the rating data:
 \begin{figure}[ht]
       \begin{center}
-            \includegraphics[width=0.8\textwidth]{images/rating distributions.png}
+            \includegraphics[width=0.7\textwidth]{images/rating distributions.png}
       \end{center}
+      \caption{data distribution}
+      \label{fig:data distribution}
 \end{figure}
 
 \newpage
@@ -165,25 +171,30 @@ Before building the matrices, the data has been split:
 \end{itemize}
 It is necessary to shuffle the data before, or in the test set would be only the data about lasts users; the analysis would not be correct.\\ \\
 The first matrix called \textbf{ratings matrix} have all the 668 \textbf{user ids} as rows, 10329 \textbf{movie ids} as columns and as values the \textbf{ratings} that users gave to the movies (the ones missing are set to 0.0).\\
-\begin{center}
-      \begin{tabular}{ | c | c | c | c | c | c | c |} 
-        \hline
-        \rowcolor{lightgray}  & 1 & 2 & 3 & ... & 148626 & 149532 \\ 
-        \hline
-         \cellcolor{lightgray}1 & 0.0 & 0.0 & 0.0 &  & 0.0 & 0.0 \\ 
-        \hline
-        \cellcolor{lightgray}2 & 0.0 & 0.0 & 2.0 &  & 0.0 & 0.0 \\ 
-        \hline
-        \cellcolor{lightgray}3 & 0.0 & 0.0 & 0.0 &  & 0.0 & 0.0\\
-        \hline
-        \cellcolor{lightgray}4 & 0.0 & 0.0 & 0.0 &  & 0.0 & 0.0\\
-        \hline
-        \cellcolor{lightgray}... &  &  &  &  &  & \\ 
-        \hline
-        \cellcolor{lightgray}668 & 0.0 & 3.0 & 0.0 &  & 4.5 & 0.0\\
-        \hline
-      \end{tabular}
-\end{center}
+\begin{table}[ht]
+      \begin{center}
+            \begin{tabular}{ | c | c | c | c | c | c | c |} 
+              \hline
+              \rowcolor{lightgray}  & 1 & 2 & 3 & ... & 148626 & 149532 \\ 
+              \hline
+               \cellcolor{lightgray}1 & 0.0 & 0.0 & 0.0 &  & 0.0 & 0.0 \\ 
+              \hline
+              \cellcolor{lightgray}2 & 0.0 & 0.0 & 2.0 &  & 0.0 & 0.0 \\ 
+              \hline
+              \cellcolor{lightgray}3 & 0.0 & 0.0 & 0.0 &  & 0.0 & 0.0\\
+              \hline
+              \cellcolor{lightgray}4 & 0.0 & 0.0 & 0.0 &  & 0.0 & 0.0\\
+              \hline
+              \cellcolor{lightgray}... &  &  &  &  &  & \\ 
+              \hline
+              \cellcolor{lightgray}668 & 0.0 & 3.0 & 0.0 &  & 4.5 & 0.0\\
+              \hline
+            \end{tabular}
+            \caption{Ratings matrix}
+            \label{tab: Ratings matrix}
+      \end{center}
+\end{table}
+
 The second matrix keeps track of all the genres associated with a movie: it has \textbf{movie ids} as rows, \textbf{genres} as columns, and as \textbf{values} "1" if the movie is associated to a genre, 0 otherwise. \\
 
 \begin{equation}
@@ -195,25 +206,30 @@ The second matrix keeps track of all the genres associated with a movie: it has 
             \end{aligned} \right.
 \end{equation} \\ 
 
-\begin{center}
-      \begin{tabular}{ | c | c | c | c | c | c | c |} 
-        \hline
-        \rowcolor{lightgray}  & Comedy & Drama & Horror & ... & Fantasy & Sci-Fi \\ 
-        \hline
-         \cellcolor{lightgray}1 & 1 & 0 & 0 &  & 1 & 0 \\ 
-        \hline
-        \cellcolor{lightgray}2 & 0 & 0 & 0 &  & 1 & 0 \\ 
-        \hline
-        \cellcolor{lightgray}3 & 1 & 0 & 0 &  & 0 & 0\\
-        \hline
-        \cellcolor{lightgray}4 & 1 & 1 & 0 &  & 0 & 0\\
-        \hline
-        \cellcolor{lightgray}... &  &  &  &  &  & \\ 
-        \hline
-        \cellcolor{lightgray}149532 & 0 & 0 & 0 &  & 0 & 0\\
-        \hline
-      \end{tabular}
-\end{center}
+\begin{table}[ht]
+      \begin{center}
+            \begin{tabular}{ | c | c | c | c | c | c | c |} 
+              \hline
+              \rowcolor{lightgray}  & Comedy & Drama & Horror & ... & Fantasy & Sci-Fi \\ 
+              \hline
+               \cellcolor{lightgray}1 & 1 & 0 & 0 &  & 1 & 0 \\ 
+              \hline
+              \cellcolor{lightgray}2 & 0 & 0 & 0 &  & 1 & 0 \\ 
+              \hline
+              \cellcolor{lightgray}3 & 1 & 0 & 0 &  & 0 & 0\\
+              \hline
+              \cellcolor{lightgray}4 & 1 & 1 & 0 &  & 0 & 0\\
+              \hline
+              \cellcolor{lightgray}... &  &  &  &  &  & \\ 
+              \hline
+              \cellcolor{lightgray}149532 & 0 & 0 & 0 &  & 0 & 0\\
+              \hline
+            \end{tabular}
+            \caption{Correlation matrix}
+            \label{Tab: Correlation matrix}
+      \end{center}
+\end{table}
+
 
 \newpage
 \textbf{Binary search} is an algorithm that find an element in an array with a complexity of O(log n). It searches in a sorted array by repeatedly dividing the search interval in half. Begin with an interval covering the whole array. If the value of the search key is less than the item in the middle of the interval, narrow the interval to the lower half. Otherwise, narrow it to the upper half. Repeatedly check until the value is found or the interval is empty.
@@ -328,6 +344,8 @@ The structure of the neural networks is made of 3 types of layers:
       \begin{center}
             \includegraphics[width=0.8\textwidth]{images/ANN_img.png}
       \end{center}
+      \caption{ANN structure}
+      \label{fig: ANN structure}
 \end{figure}
 
 
@@ -598,7 +616,72 @@ The results obtained by collaborative filtering, content-based filtering and the
 \end{table}
 
 From the results, it's possible to see how the hybrid model is much better than just applying only one filtering technique both in terms of error and F1-score.
-
+\newpage
 \subsection{Neural network results}
+
+The results obtained by neural networks are reported in the following tables.\\ \\
+
+\begin{table}[h]
+      \begin{tabular}{ | c | c | c | c | c | c | c | c |} 
+        \hline
+        \rowcolor{lightgray} Act.F & L & Opt & RMSE & rho & Precision & Recall & F1-score \\ 
+        \hline
+        \cellcolor{lightgray} tanh & Xen & M & 1.106
+            & 0.224 & 0.850 & 0.865 & 0.857 \\ 
+        \hline
+        \cellcolor{lightgray} tanh & Xen & SGD & 0.994
+            & 0.415 & 0.882 & 0.812 & 0.846 \\ 
+        \hline
+        \cellcolor{lightgray} tanh & MSE & M & 1.263
+            & 0.428 & 0.920 & 0.670 & 0.775 \\ 
+        \hline
+        \cellcolor{lightgray} tanh & MSE & SGD & 1.263
+            & 0.428 & 0.920 & 0.669 & 0.775 \\ 
+        \hline
+        \cellcolor{lightgray} ReLU & Xen & M & 1.297
+            & 0.183 & 0.854 & 0.749 & 0.798 \\ 
+        \hline
+        \cellcolor{lightgray} ReLU & Xen & SGD & 1.074
+            & 0.438 & 0.907 & 0.710 & 0.796 \\ 
+        \hline
+        \cellcolor{lightgray} Swish & Xen & M & 1.138
+            & 0.208 & 0.861 & 0.803 & 0.831 \\ 
+        \hline
+        \cellcolor{lightgray} Swish & Xen & SGD & 1.135
+            & 0.415 & 0.904 & 0.714 & 0.798 \\ 
+        \hline
+        \cellcolor{lightgray} Leaky-ReLU & Xen & M & 1.172
+            & 0.168 & 0.854 & 0.666 & 0.749 \\ 
+        \hline
+        \cellcolor{lightgray} Leaky-ReLU & Xen & SGD &        1.043 & 0.428 & 0.901 & 0.726 & 0.804 \\ 
+        \hline
+      \end{tabular}
+    \caption{Results of neural networks}
+    \label{FilteringResultsNN}
+\end{table}
+
+\textbf{Legend}:
+    \begin{itemize}
+        \item \textbf{L}: loss function used
+        \item \textbf{Xen}: cross entropy
+        \item \textbf{MSE}: mean square error
+        \item \textbf{Opt}: optimization method used
+        \item \textbf{SGD}: stochastic gradient descent method
+        \item \textbf{M}: SGD with momentum
+    \end{itemize}
+Add some comments on the results
+
+
+\section{Conclusion}
+The scope of this project was to built a recommender system to suggest some movie to a user, based on his preferences and the knowledge obtained by the other users. The best approch resulted was ... but also using ... good result were retreived.
+The results obtained could be subject to little fluctuations, caused by the randomly choice of the data in the minibatch during the NN training. 
+
+\section{References}
+\begin{itemize}
+      \item Mojdeh Saadati, Syed Shihab, Mohammed Shaiqur Rahman. \textsl{Movie Recommender Systems: Implementation and Performace Evaluation}, Iowa State University.
+      \item Mahesh Goyani and Neha Chaurasiya. \textsl{A Review of Movie Recommendation System: Limitations, Survey and Challenges}
+      \item Ravee Khandagale (2018). \textsl{Using Filters in TIME-BASED movie Recommender System}
+      \item Nematollah Zarmehi and Farokh Marvasti (2017). \textsl{Adaptive Singular Value Thresholding}
+\end{itemize}
 
 \end{document}
