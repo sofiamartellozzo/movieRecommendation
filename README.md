@@ -7,7 +7,7 @@ social tags, and products in general. This project is focused on movies.
 
 ## Group Components
 
-| Surname    | Name       | E-mail                             | Codice Persona |
+| Surname    | Name       | E-mail                             | Person Code    |
 |------------|------------|------------------------------------|----------------|
 | Martellozzo| Sofia      | sofia.martellozzo@mail.polimi.it   | 10623060       |
 | Nunziante  | Matteo     | matteo.nunziante@mail.polimi.it    | 10670132       |
